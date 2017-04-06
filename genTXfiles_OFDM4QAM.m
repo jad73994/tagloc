@@ -7,7 +7,7 @@ load Parameters.mat
 %QAM Size: 1 for BPSK, 2 for 4QAM, 4 for 16QAM, 6 for 64 QAM, 8 for 256 QAM
 QAMsize =2;
 
-fake_cfo = 0;
+fake_cfo = -0;
 
 %%Generate TX signal time domain%%
 numBits=num_syms_data*num_bins_data;

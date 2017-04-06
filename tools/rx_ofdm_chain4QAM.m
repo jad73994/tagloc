@@ -3,7 +3,7 @@ function [ h, bits_data_rcv, avg_SNR,xx,yy, SNR_in_dB,return_SNR] = rx_ofdm_chai
 
 avg_SNR= 0;
 ldfrmfile = 1;
-cfo_syms = 6;
+cfo_syms = 30;
 
 load Parameters.mat
 
@@ -47,7 +47,7 @@ subcarrier_config(convert_bin_index_normal_to_fft(pilots,num_bins)) = 3;
 
 current_index = 1;
 
-packet_start = packet_detection(rx_signal(current_index:end)) + 6
+packet_start = packet_detection(rx_signal(current_index:end)) + 4
 %packet_start = 2920328;
 
 
@@ -65,12 +65,12 @@ current_index = current_index + 4;
 
 %TESTING CFO ESTIMATE
 arxs = angle(rx_signal);
-figure(1413432)
-hold all
+% figure(1413432)
+% hold all
 for test_num_cfo = 1:96
     phases(test_num_cfo) = arxs(current_index + 6 + test_num_cfo*num_bins);
     amplitudes(test_num_cfo) = abs(rx_signal(current_index + 6 + test_num_cfo*num_bins));
-    plot(db(abs(rx_signal(current_index+test_num_cfo*num_bins:current_index+test_num_cfo*num_bins+num_bins))))
+    % plot(abs(rx_signal(current_index+test_num_cfo*num_bins:current_index+test_num_cfo*num_bins+num_bins)))
     
     for packeti = 1:num_packets
         cfo_test(packeti) = estimate_cfo(rx_signal(current_index:current_index+((test_num_cfo/2)*num_bins)-1),rx_signal(current_index+((test_num_cfo/2)*num_bins):current_index+(test_num_cfo*num_bins)-1),fs);
@@ -80,12 +80,12 @@ for test_num_cfo = 1:96
     mean_cfos_test(test_num_cfo) = mean(cfo_test);
     std_cfos_test(test_num_cfo) = std(cfo_test);
 end
-
-figure(242341251)
-plot(unwrap(phases))
-
-figure(234234233)
-plot(amplitudes)
+% 
+% figure(242341251)
+% plot(unwrap(phases))
+% 
+% figure(234234233)
+% plot(amplitudes)
 
 figure(13415151)
 plot(mean_cfos_test(2:2:end))
@@ -137,6 +137,10 @@ for packeti = 1:num_packets
 end
 
 
+figure(34351)
+hold all
+plot(unwrap(lr(1,:) + 33*lr(2,:)))
+
 
 %correct residual cfo
 coeffs = polyfit(1:1000,unwrap(lr(1,:) + 33*lr(2,:)),1);
@@ -186,30 +190,35 @@ plot(unwrap(lr(1,:) + 33*lr(2,:)))
 
 %Calculate zero subchannel phase
 
-slope = 0;
-yint = 0;
-numinc = 0;
-
 for i=1:length(lr(1,:))
-    if abs(lr(1,i)) < (abs(median(lr(1,:)))+0.4)
-        if abs(lr(1,i)) > (abs(median(lr(1,:)))-0.4)
-            if abs(lr(2,i)) < (abs(median(lr(2,:)))+0.4)
-                if abs(lr(2,i)) > (abs(median(lr(2,:)))-0.4)
-                    numinc = numinc + 1;
-                    yint = yint + lr(1,i);
-                    slope = slope + lr(2,i);
-
-                    zp_store(numinc,1) = mod(lr(1,i) + lr(2,i)*33 + pi, 2*pi) - pi;
-                    zp_store1(numinc,1) = mod(lr(1,i) + lr(2,i)*33, 2*pi);
-                end
-            end
-        end
-    end
+    zp_store(i) = mod(lr(1,i) + lr(2,i)*33 + pi, 2*pi) - pi;
+    zp_store1(i) = mod(lr(1,i) + lr(2,i)*33, 2*pi);
 end
+
+% slope = 0;
+% yint = 0;
+% numinc = 0;
+% 
+% for i=1:length(lr(1,:))
+%     if abs(lr(1,i)) < (abs(median(lr(1,:)))+0.4)
+%         if abs(lr(1,i)) > (abs(median(lr(1,:)))-0.4)
+%             if abs(lr(2,i)) < (abs(median(lr(2,:)))+0.4)
+%                 if abs(lr(2,i)) > (abs(median(lr(2,:)))-0.4)
+%                     numinc = numinc + 1;
+%                     yint = yint + lr(1,i);
+%                     slope = slope + lr(2,i);
+% 
+%                     zp_store(numinc,1) = mod(lr(1,i) + lr(2,i)*33 + pi, 2*pi) - pi;
+%                     zp_store1(numinc,1) = mod(lr(1,i) + lr(2,i)*33, 2*pi);
+%                 end
+%             end
+%         end
+%     end
+% end
 
 %slope = slope/numinc
 %yint = yint/numinc
-numinc
+%numinc
 %zp = mod(yint + slope*33 + pi, 2*pi) - pi
 zp = mean(zp_store)
 std_dev = std(zp_store)

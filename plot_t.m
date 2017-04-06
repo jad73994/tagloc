@@ -3,7 +3,7 @@ close all
 
 dir = '/home/abari/Desktop/tagloc/';
 txtty = '4';
-rxtty = '3';
+rxtty = '2';
 
 unix(strcat(['sudo python ',dir,'ttyexec.py pts/',txtty,' "tx ',dir,'OFDM_fakecfo 2 13e3"']))
 pause(1.5);
