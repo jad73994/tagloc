@@ -29,22 +29,6 @@ subcarrier_config(convert_bin_index_normal_to_fft(pilots,num_bins)) = 3;
 %% PACKET DETECTION
 
 
-avg_SNR= 0;
-ldfrmfile = 1;
-
-if(ldfrmfile==0)
-   num_bins = 64;
-   gaurd_bins =[-32,-31,-30,-29,-28,-27,0,27,28,29,30,31];
-   pilots = [-21,-7,7,21];
-   cp = 16;
-end
-
-
-bits_data_rcv = [];
-subcarrier_config = ones(1,num_bins);
-subcarrier_config(convert_bin_index_normal_to_fft(gaurd_bins,num_bins)) = 0;
-subcarrier_config(convert_bin_index_normal_to_fft(pilots,num_bins)) = 3; 
-
 current_index = 1;
 
 packet_start = packet_detection(rx_signal(current_index:end)) + 4
@@ -117,7 +101,7 @@ current_index = current_index - packet_size*num_packets + 94*num_bins;
 
 %%channel estimation
 for packeti = 1:num_packets
-    [h,shift,absVal] = estimate_channel(rx_signal2(current_index:current_index+num_bins-1),rx_signal2(current_index+num_bins:current_index+2*num_bins-1));
+    h = estimate_channel(rx_signal2(current_index:current_index+num_bins-1),rx_signal2(current_index+num_bins:current_index+2*num_bins-1));
 
     uafs = unwrap(angle(fftshift(h)));
 
@@ -160,7 +144,7 @@ current_index = current_index - packet_size*num_packets;
 
 %%channel estimation again
 for packeti = 1:num_packets
-    [h,shift,absVal] = estimate_channel(rx_signal(current_index:current_index+num_bins-1),rx_signal(current_index+num_bins:current_index+2*num_bins-1));
+    h = estimate_channel(rx_signal(current_index:current_index+num_bins-1),rx_signal(current_index+num_bins:current_index+2*num_bins-1));
 
     uafs = unwrap(angle(fftshift(h)));
 

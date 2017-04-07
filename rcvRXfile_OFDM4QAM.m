@@ -7,14 +7,16 @@ QAMsize =2;
 
 load Parameters.mat
 
-fl = '_2.dat';
-offset = 16e6;
-%offset = offset + 64e6;
+dir = '/home/abari/Desktop/tagloc/';
+
+fl = '_0.dat';
+offset = 17e6;
+offset = offset + 64e6;
 
 knowncfo=-1;
-%knowncfo = 31.715;
-%knowncfo = 36.56045;
-knowncfo = 41.4059;
+knowncfo = 31.7493;
+%knowncfo = 36.5999;
+%knowncfo = 41.3401;
 
 rx_signal=read_complex_binary2(strcat(dir,'rxdata/',fl),50e6, offset); %length, start
 %rx_signal=read_complex_binary2(strcat(dir,'OFDM_fakecfo_0.dat'),50e6,4e6);

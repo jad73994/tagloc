@@ -1,4 +1,4 @@
-function [ H,shift,med_absVal ] = estimate_channel(rx_sym1,rx_sym2)
+function [ H ] = estimate_channel(rx_sym1,rx_sym2)
 
 load Parameters.mat
 
@@ -10,8 +10,7 @@ tx_sym(subcarrier_config~=0) = 1-2*bits_preamble;
 rx_sym = (1/sqrt(num_bins))*fft((rx_sym1+rx_sym2)/2);
 H = rx_sym./tx_sym;
 
-shift = 0;
-med_absVal = 0;
+
 %med_power=0;
 %shift = 0;
 % 
