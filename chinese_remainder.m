@@ -8,7 +8,7 @@ function [ d ] = chinese_remainder(phases, frequencies)
     gaus_stdev = phase_error_tolerance_radians ./ (2 * pi * frequencies * 1e6);
     gaus_scale = 1 ./ normpdf(0,0,gaus_stdev);
 
-    tau_init = phases ./ (2 * pi * frequencies * 1e6);
+    tau_init = (phases-2*pi) ./ (2 * pi * frequencies * 1e6);
     tau_delta = 1 ./ (frequencies * 1e6);
 
     for i=1:length(frequencies)
@@ -27,12 +27,12 @@ function [ d ] = chinese_remainder(phases, frequencies)
     
     
     %% Find Peaks
-    [pks, locs] = findpeaks(gaussians_multiplied,'MinPeakDistance',peaks_separation,'MinPeakHeight',max(gaussians_multiplied)/1.001);
+    [pks, locs] = findpeaks(gaussians_multiplied,'MinPeakDistance',peaks_separation,'MinPeakHeight',max(gaussians_multiplied)/10);
  
     if length(locs) == 0
         d = -1;
     else 
-        d = locs(1)/1000;
+        d = locs/1000;
     end
 
 
