@@ -1,6 +1,6 @@
 function [ d ] = chinese_remainder(phases, frequencies)
     phase_error_tolerance_radians = 0.2;
-    max_nanoseconds = 100;
+    max_nanoseconds = 200;
     peaks_separation = 2000; % (2ns)
 
     seconds = [0:1e-12:max_nanoseconds * 1e-9];

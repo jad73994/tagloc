@@ -12,14 +12,14 @@ gtrdir = '/home/abari/Projects/RFIT/uhd/host/build/mmimo/general_tx_rx';
 txips = 'addr0=192.168.30.2,addr1=192.168.40.2,addr2=192.168.50.2';
 rxips = 'addr0=192.168.60.2,addr1=192.168.70.2,addr2=192.168.80.2';
 
-frequencies = [740,850,960];
+frequencies = [760,870,980];
 %frequencies_measured = [719.9725,829.6375,939.8875];
 frequencies_measured = frequencies;
 load Parameters.mat
 
 packet_detection_bump = 4;
 max_zp_std = 0.5;
-cfo_syms = 30;
+cfo_syms = 36;
 QAMsize = 2;
 num_packets = 1000;
 packet_size = num_syms_preamble*num_bins + cp;
@@ -27,9 +27,10 @@ packet_size = packet_size + (num_syms_data/QAMsize)*(num_bins+cp);
 
 
 
-%% Capture (flip switch ~15sec after "SSSSSSS" shows in tx terminal)
+%% Capture
 flag = 0;
 offset1 = 0;
+punt = 0;
 freqs = strcat([int2str(frequencies(1)),'e6,',int2str(frequencies(2)),'e6,',int2str(frequencies(3)),'e6']);
 
 
@@ -44,9 +45,8 @@ while flag == 0
     urlread('http://192.168.1.4/30000/15'); %turn on lna
     
     unix(strcat(['sudo python ',dir,'ttyexec.py pts/',txtty,' "tx ',dir,'OFDM_fakecfo 2 13e3"']));
-    pause(1.3);
     unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "rx ',dir,'rxdata/ 150000000"']));
-    pause(14.4);
+    pause(16);
     
     urlread('http://192.168.1.4/30000/01'); %set to wireless
     pause(25);
@@ -252,49 +252,115 @@ for packeti = 1:num_packets
     lr(6,packeti) = zero_subchannel_phase(estimate_channel(rx_signal(6,start_index1:end_index1),rx_signal(6,start_index2:end_index2)));
 end
 
-% lrm1 = mod(lr,2*pi);%should we do mod of mean or mean of mod??
-% lrm2 = mod(lr+pi,2*pi)-pi;
-% 
-% for si = 1:6
-%     zp1(si) = mod(mean(lrm1(si,:)),2*pi);
-%     sd1(si) = std(lrm1(si,:));
-%     zp2(si) = mod(mean(lrm2(si,:))+pi,2*pi)-pi;
-%     sd2(si) = std(lrm2(si,:));
-%     
-%     if sd1(si) > max_zp_std && sd2(si) > max_zp_std
-%         disp('Channel Estimation Error')
-%         return
-%     end
-%     
-%     if sd1 < sd2
-%         zp(si) = zp1(si);
-%     else
-%         zp(si) = zp2(si);
-%     end
-% end
-
 for si = 1:6
-    zp(si) = mod(mean(lr(si,:)),2*pi);
-    sp(si) = std(lr(si,:));
+    zp(si) = mod(mean(unwrap(lr(si,:))),2*pi);
+    sp(si) = std(unwrap(lr(si,:)));
     
     if sp(si) > max_zp_std
         disp('Channel Estimation Error')
-        return
+        punt = 1;
     end
 end
 
 sp
-zp
 
-phases(1) = zp(1)-zp(4);
-phases(2) = zp(2)-zp(5);
-phases(3) = zp(3)-zp(6);
+if punt == 0
+    phases(1) = zp(1)-zp(4);
+    phases(2) = zp(2)-zp(5);
+    phases(3) = zp(3)-zp(6);
 
-chinese_remainder(phases, frequencies_measured)
+    phases
+    
+    chinese_remainder(phases, frequencies_measured)
+end
 
 
 
 
+%% Debugging
+resp = 'y';
+while ~strcmp(resp, 'n')
+    resp = input('Debug? (pd, cfo, rss, zp)', 's');
+    
+    if strcmp(resp,'rss')
+        figure(3)
+        subplot(3,2,1)
+        plot(abs(rx_signal(1,1:1e2:end)))
+        subplot(3,2,2)
+        plot(abs(rx_signal(4,1:1e2:end)))
+        subplot(3,2,3)
+        plot(abs(rx_signal(2,1:1e2:end)))
+        subplot(3,2,4)
+        plot(abs(rx_signal(5,1:1e2:end)))
+        subplot(3,2,5)
+        plot(abs(rx_signal(3,1:1e2:end)))
+        subplot(3,2,6)
+        plot(abs(rx_signal(6,1:1e2:end)))
+    end
+
+    if strcmp(resp,'pd')
+        figure(4)
+        %show packet detection debugging
+    end
+
+    if strcmp(resp,'cfo')
+        resp = input('Which file? (0, 1, 2)', 's');
+        disp('reading files...');
+        rx_sample = read_complex_binary2(strcat([dir,'rxdata/_', resp, '.dat']),15e7,0);
+
+        rx_signal_temp = rx_sample.';
+        clear rx_sample;
+
+        rx_signal1 = rx_signal_temp(offset1:offset1+50e6);
+        rx_signal2 = rx_signal_temp(offset2:offset2+50e6);
+        clear rx_signal;
+        
+        for cfo_syms = 2:2:96
+            cfoi1 = zeros(1,num_packets);
+            cfoi2 = zeros(1,num_packets);
+
+            %rough cfo estimate
+            for packeti = 1:num_packets
+                start_index1 = cfo_start0 + (packeti-1)*packet_size;
+                end_index1 = start_index1+((cfo_syms/2)*num_bins)-1;
+                start_index2 = start_index1+((cfo_syms/2)*num_bins);
+                end_index2 = start_index1+(cfo_syms*num_bins)-1;
+                cfoi1(packeti) = estimate_cfo(rx_signal1(start_index1:end_index1),rx_signal1(start_index2:end_index2),fs);
+
+                start_index1 = cfo_start1 + (packeti-1)*packet_size;
+                end_index1 = start_index1+((cfo_syms/2)*num_bins)-1;
+                start_index2 = start_index1+((cfo_syms/2)*num_bins);
+                end_index2 = start_index1+(cfo_syms*num_bins)-1;
+                cfoi2(packeti) = estimate_cfo(rx_signal2(start_index1:end_index1),rx_signal2(start_index2:end_index2),fs);
+            end
+
+            cfot1(cfo_syms) = mean(cfoi1);
+            cfot2(cfo_syms) = mean(cfoi2);
+        end
+        
+        figure(5)
+        subplot(1,2,1)
+        plot(2:2:96,cfot1(2:2:96))
+        subplot(1,2,2)
+        plot(2:2:96,cfot2(2:2:96))
+    end
+    
+    if strcmp(resp,'zp')
+        figure(6)
+        subplot(3,2,1)
+        plot(unwrap(lr(1,:)))
+        subplot(3,2,2)
+        plot(unwrap(lr(4,:)))
+        subplot(3,2,3)
+        plot(unwrap(lr(2,:)))
+        subplot(3,2,4)
+        plot(unwrap(lr(5,:)))
+        subplot(3,2,5)
+        plot(unwrap(lr(3,:)))
+        subplot(3,2,6)
+        plot(unwrap(lr(6,:)))
+    end
+end
 
 
 

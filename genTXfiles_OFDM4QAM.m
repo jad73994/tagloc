@@ -3,6 +3,7 @@ clear;
 close all
 
 load Parameters.mat
+dir = '/home/abari/Desktop/tagloc/';
 
 %QAM Size: 1 for BPSK, 2 for 4QAM, 4 for 16QAM, 6 for 64 QAM, 8 for 256 QAM
 QAMsize =2;
