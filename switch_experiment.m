@@ -12,7 +12,7 @@ gtrdir = '/home/abari/Projects/RFIT/uhd/host/build/mmimo/general_tx_rx';
 txips = 'addr0=192.168.30.2,addr1=192.168.40.2,addr2=192.168.50.2';
 rxips = 'addr0=192.168.60.2,addr1=192.168.70.2,addr2=192.168.80.2';
 
-frequencies = [760,870,980];
+frequencies = [907,919,923];
 %frequencies_measured = [719.9725,829.6375,939.8875];
 frequencies_measured = frequencies;
 load Parameters.mat
@@ -25,6 +25,14 @@ num_packets = 1000;
 packet_size = num_syms_preamble*num_bins + cp;
 packet_size = packet_size + (num_syms_data/QAMsize)*(num_bins+cp);
 
+usevna = 0;
+vnapoints = 1601;
+vnastart = 700;
+vnaend = 1000;
+instrreset
+vna = Vna('model', Vna.MODEL_AGILENT_E5071C, 'iface', Instr.INSTR_IFACE_TCPIP, 'tcpipAddress', '192.168.128.1', 'tcpipPort', 5025 );
+vna.SetTriggerContinuous;
+%set to 600MHz - 1000MHz
 
 
 %% Capture
@@ -41,20 +49,72 @@ while flag == 0
     unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "sudo ', gtrdir,' --arg ',rxips,' --rate 5e6 --multifreq ', freqs,' --ant TX/RX --ref EXTERNAL --tx_gain 20 --rx_gain 20"']));
     pause(10);%wait for usrps to start and lock
     
-    urlread('http://192.168.1.4/30000/00'); %set to wire
-    urlread('http://192.168.1.4/30000/15'); %turn on lna
+    control_relays('usrp');
+    control_relays('cal');
+    control_relays('lnaon');
+    control_relays('rcv1');
     
     unix(strcat(['sudo python ',dir,'ttyexec.py pts/',txtty,' "tx ',dir,'OFDM_fakecfo 2 13e3"']));
     unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "rx ',dir,'rxdata/ 150000000"']));
-    pause(16);
     
-    urlread('http://192.168.1.4/30000/01'); %set to wireless
-    pause(25);
+    pause(0.5);
+    pause(3.6);
+    control_relays('rcv2');
+    pause(3.6);
+    control_relays('rcv3');
+    pause(3.6);
+    control_relays('rcv4');
+    pause(3.6);
+    pause(0.5);
     
-    urlread('http://192.168.1.4/30000/14'); %turn off lna (it gets hot)
-    urlread('http://192.168.1.4/30000/00'); %set to wire
+    control_relays('test');
+    control_relays('rcv1');
+    
+    pause(0.5);
+    pause(3.6);
+    control_relays('rcv2');
+    pause(3.6);
+    control_relays('rcv3');
+    pause(3.6);
+    control_relays('rcv4');
+    pause(3.6);
+    pause(0.5);
+    
+    pause(10);
     unix(strcat(['sudo python ',dir,'ttyexec.py pts/',txtty,' "quit"']));
     unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "quit"']));
+    
+    
+    control_relays('vna');
+    control_relays('rcvnone');
+    
+    if usevna == 1
+        control_relays('cal');
+        pause(0.2);
+
+        calvna = zeros(1,vnapoints);
+        testvna = zeros(1,vnapoints);
+
+        for i = 1:10
+            [vnax, ~, ~, vnay]=vna.GetTraceData('Tr1');
+            calvna = calvna + angle(vnay);
+            pause(0.2);
+        end
+
+        control_relays('test');
+        pause(0.2);
+
+        for vnai = 11:20
+            [vnax, ~, ~, vnay]=vna.GetTraceData('Tr1');
+            testvna = testvna + angle(vnay);
+            pause(0.2);
+        end
+
+        calvna = calvna ./ 10;
+        testvna = testvna ./ 10;
+    end
+    
+    control_relays('lnaoff');
 
     % verify flip was correct
 
@@ -89,14 +149,14 @@ clear rx_samples2;
 
 offset2 = offset1 + 64e6;
 
-rx_signal(1,:) = rx_signal0(offset1:offset1+50e6);
-rx_signal(4,:) = rx_signal0(offset2:offset2+50e6);
+rx_signal(1,:) = rx_signal0(offset1:(offset1+50e6));
+rx_signal(4,:) = rx_signal0(offset2:(offset2+50e6));
 clear rx_signal0;
-rx_signal(2,:) = rx_signal1(offset1:offset1+50e6);
-rx_signal(5,:) = rx_signal1(offset2:offset2+50e6);
+rx_signal(2,:) = rx_signal1(offset1:(offset1+50e6));
+rx_signal(5,:) = rx_signal1(offset2:(offset2+50e6));
 clear rx_signal1;
-rx_signal(3,:) = rx_signal2(offset1:offset1+50e6);
-rx_signal(6,:) = rx_signal2(offset2:offset2+50e6);
+rx_signal(3,:) = rx_signal2(offset1:(offset1+50e6));
+rx_signal(6,:) = rx_signal2(offset2:(offset2+50e6));
 clear rx_signal2;
 
 
@@ -181,9 +241,9 @@ for packeti = 1:num_packets
     end_index1 = start_index1+num_bins-1;
     start_index2 = start_index1+num_bins;
     end_index2 = start_index1+2*num_bins-1;
-    lr(1,packeti) = zero_subchannel_phase(estimate_channel(temp_signal(1,start_index1:end_index1),temp_signal(1,start_index2:end_index2)));
-    lr(2,packeti) = zero_subchannel_phase(estimate_channel(temp_signal(2,start_index1:end_index1),temp_signal(2,start_index2:end_index2)));
-    lr(3,packeti) = zero_subchannel_phase(estimate_channel(temp_signal(3,start_index1:end_index1),temp_signal(3,start_index2:end_index2)));
+    lr_p(1,packeti) = zero_subchannel_phase(estimate_channel(temp_signal(1,start_index1:end_index1),temp_signal(1,start_index2:end_index2)));
+    lr_p(2,packeti) = zero_subchannel_phase(estimate_channel(temp_signal(2,start_index1:end_index1),temp_signal(2,start_index2:end_index2)));
+    lr_p(3,packeti) = zero_subchannel_phase(estimate_channel(temp_signal(3,start_index1:end_index1),temp_signal(3,start_index2:end_index2)));
 end
 
 %rough cfo correction (2/2 because laptop runs out of memory...)
@@ -197,9 +257,9 @@ for packeti = 1:num_packets
     end_index1 = start_index1+num_bins-1;
     start_index2 = start_index1+num_bins;
     end_index2 = start_index1+2*num_bins-1;
-    lr(4,packeti) = zero_subchannel_phase(estimate_channel(temp_signal(1,start_index1:end_index1),temp_signal(1,start_index2:end_index2)));
-    lr(5,packeti) = zero_subchannel_phase(estimate_channel(temp_signal(2,start_index1:end_index1),temp_signal(2,start_index2:end_index2)));
-    lr(6,packeti) = zero_subchannel_phase(estimate_channel(temp_signal(3,start_index1:end_index1),temp_signal(3,start_index2:end_index2)));
+    lr_p(4,packeti) = zero_subchannel_phase(estimate_channel(temp_signal(1,start_index1:end_index1),temp_signal(1,start_index2:end_index2)));
+    lr_p(5,packeti) = zero_subchannel_phase(estimate_channel(temp_signal(2,start_index1:end_index1),temp_signal(2,start_index2:end_index2)));
+    lr_p(6,packeti) = zero_subchannel_phase(estimate_channel(temp_signal(3,start_index1:end_index1),temp_signal(3,start_index2:end_index2)));
 end
 
 clear temp_signal;
@@ -208,7 +268,7 @@ disp('doing fine cfo estimate/correction...');
 
 %fine cfo estimate
 for si = 1:6
-    coeffs = polyfit(1:1000,unwrap(lr(si,:)),1);
+    coeffs = polyfit(1:1000,unwrap(lr_p(si,:)),1);
     slp = coeffs(1);
     fine_cfo(si) = (slp*1000) / (2*pi*9.28314);
 end
@@ -280,7 +340,7 @@ end
 %% Debugging
 resp = 'y';
 while ~strcmp(resp, 'n')
-    resp = input('Debug? (pd, cfo, rss, zp)', 's');
+    resp = input('Debug? (pd, cfo, rss, zp, vna)', 's');
     
     if strcmp(resp,'rss')
         figure(3)
@@ -299,8 +359,22 @@ while ~strcmp(resp, 'n')
     end
 
     if strcmp(resp,'pd')
+        pd0s
+        pd1s
+        
         figure(4)
-        %show packet detection debugging
+        subplot(3,2,1)
+        plot(abs(rx_signal(1,[(packet_start0-100):(packet_start0+100)])))
+        subplot(3,2,2)
+        plot(abs(rx_signal(4,[(packet_start1-100):(packet_start1+100)])))
+        subplot(3,2,3)
+        plot(abs(rx_signal(2,[(packet_start0-100):(packet_start0+100)])))
+        subplot(3,2,4)
+        plot(abs(rx_signal(5,[(packet_start1-100):(packet_start1+100)])))
+        subplot(3,2,5)
+        plot(abs(rx_signal(3,[(packet_start0-100):(packet_start0+100)])))
+        subplot(3,2,6)
+        plot(abs(rx_signal(6,[(packet_start1-100):(packet_start1+100)])))
     end
 
     if strcmp(resp,'cfo')
@@ -311,9 +385,8 @@ while ~strcmp(resp, 'n')
         rx_signal_temp = rx_sample.';
         clear rx_sample;
 
-        rx_signal1 = rx_signal_temp(offset1:offset1+50e6);
-        rx_signal2 = rx_signal_temp(offset2:offset2+50e6);
-        clear rx_signal;
+        rx_signal1 = rx_signal_temp(offset1:(offset1+50e6));
+        rx_signal2 = rx_signal_temp(offset2:(offset2+50e6));
         
         for cfo_syms = 2:2:96
             cfoi1 = zeros(1,num_packets);
@@ -346,19 +419,41 @@ while ~strcmp(resp, 'n')
     end
     
     if strcmp(resp,'zp')
+        resp = input('Final or preliminary? (f, p)', 's');
+        
+        if strcmp(resp,'f')
+            lrn = lr;
+        end
+        if strcmp(resp,'p')
+            lrn = lr_p;
+        end
+        
         figure(6)
         subplot(3,2,1)
-        plot(unwrap(lr(1,:)))
+        plot(unwrap(lrn(1,:)))
         subplot(3,2,2)
-        plot(unwrap(lr(4,:)))
+        plot(unwrap(lrn(4,:)))
         subplot(3,2,3)
-        plot(unwrap(lr(2,:)))
+        plot(unwrap(lrn(2,:)))
         subplot(3,2,4)
-        plot(unwrap(lr(5,:)))
+        plot(unwrap(lrn(5,:)))
         subplot(3,2,5)
-        plot(unwrap(lr(3,:)))
+        plot(unwrap(lrn(3,:)))
         subplot(3,2,6)
-        plot(unwrap(lr(6,:)))
+        plot(unwrap(lrn(6,:)))
+    end
+    
+    if strcmp(resp,'vna')
+        ftovna = round(((frequencies_measured - vnastart) ./ (vnaend-vnastart)) * vnapoints);
+        phases(1) = calvna(ftovna(1))-testvna(ftovna(1));
+        phases(2) = calvna(ftovna(2))-testvna(ftovna(2));
+        phases(3) = calvna(ftovna(3))-testvna(ftovna(3));
+    
+        ftovna
+        phases
+    
+        close all
+        chinese_remainder(phases, frequencies_measured)        
     end
 end
 
