@@ -58,26 +58,26 @@ while flag == 0
     unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "rx ',dir,'rxdata/ 150000000"']));
     
     pause(0.5);
-    pause(3.6);
+    pause(3.5);
     control_relays('rcv2');
-    pause(3.6);
+    pause(3.5);
     control_relays('rcv3');
-    pause(3.6);
+    pause(3.5);
     control_relays('rcv4');
-    pause(3.6);
+    pause(3.5);
     pause(0.5);
     
     control_relays('test');
     control_relays('rcv1');
     
     pause(0.5);
-    pause(3.6);
+    pause(3.5);
     control_relays('rcv2');
-    pause(3.6);
+    pause(3.5);
     control_relays('rcv3');
-    pause(3.6);
+    pause(3.5);
     control_relays('rcv4');
-    pause(3.6);
+    pause(3.5);
     pause(0.5);
     
     pause(10);
@@ -114,6 +114,7 @@ while flag == 0
         testvna = testvna ./ 10;
     end
     
+    control_relays('cal');
     control_relays('lnaoff');
 
     % verify flip was correct
