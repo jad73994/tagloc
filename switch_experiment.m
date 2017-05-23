@@ -90,7 +90,6 @@ while flag == 0
     
     if usevna == 1
         control_relays('cal');
-        pause(0.2);
 
         calvna = zeros(1,vnapoints);
         testvna = zeros(1,vnapoints);
@@ -102,7 +101,6 @@ while flag == 0
         end
 
         control_relays('test');
-        pause(0.2);
 
         for vnai = 11:20
             [vnax, ~, ~, vnay]=vna.GetTraceData('Tr1');

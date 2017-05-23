@@ -4,15 +4,23 @@ close all
 
 %% Script Parameters
 
-frequencies = [897,913,927];
+f_center = 2450;
+f_start = 2400;
+f_end = 2500;
+frequencies = [2431,2451,2471];
 vnapoints = 1601;
 
 instrreset
 vna = Vna('model', Vna.MODEL_AGILENT_E5071C, 'iface', Instr.INSTR_IFACE_TCPIP, 'tcpipAddress', '192.168.128.1', 'tcpipPort', 5025 );
 vna.SetTriggerContinuous;
-%set to 600MHz - 1000MHz
+%set to f_start to f_end
 %set to 1601 points
 %turn off beep
+
+num_antennas = 4;
+spacing = 0.5 * 0.1224;
+ant_pos = spacing * [0:num_antennas-1];
+theta_vals = (1:1:180)*pi/180;
 
 
 %% Capture
@@ -78,37 +86,53 @@ for vnai = 1:10
 end
 
 
+control_relays('rcvnone');
 control_relays('cal');
 control_relays('lnaoff');
 
-calvna1 = zeros(1,vnapoints);
-testvna1 = zeros(1,vnapoints);
-calvna2 = zeros(1,vnapoints);
-testvna2 = zeros(1,vnapoints);
-calvna3 = zeros(1,vnapoints);
-testvna3 = zeros(1,vnapoints);
-calvna4 = zeros(1,vnapoints);
-testvna4 = zeros(1,vnapoints);
+calvna(1,:) = mean(calvna1temp);
+calvna(2,:) = mean(calvna2temp);
+calvna(3,:) = mean(calvna3temp);
+calvna(4,:) = mean(calvna4temp);
+testvna(1,:) = mean(testvna1temp);
+testvna(2,:) = mean(testvna2temp);
+testvna(3,:) = mean(testvna3temp);
+testvna(4,:) = mean(testvna4temp);
 
-for i = 1:vnapoints
-    calvna1(i) = phase_average(angle(calvna1temp(:,i)));
-    calvna2(i) = phase_average(angle(calvna2temp(:,i)));
-    calvna3(i) = phase_average(angle(calvna3temp(:,i)));
-    calvna4(i) = phase_average(angle(calvna4temp(:,i)));
-    testvna1(i) = phase_average(angle(testvna1temp(:,i)));
-    testvna2(i) = phase_average(angle(testvna2temp(:,i)));
-    testvna3(i) = phase_average(angle(testvna3temp(:,i)));
-    testvna4(i) = phase_average(angle(testvna4temp(:,i)));
-end
+ftovna = round(((frequencies - f_start) ./ (f_end-f_start)) * vnapoints);
+vnah = calvna(:,ftovna)-testvna(:,ftovna);
 
-ftovna = round(((frequencies - 890) ./ 70) * vnapoints);
-phases1 = calvna1(ftovna)-testvna1(ftovna);
-phases2 = calvna2(ftovna)-testvna2(ftovna);
-phases3 = calvna3(ftovna)-testvna3(ftovna);
-phases4 = calvna4(ftovna)-testvna4(ftovna);
-%     
+figure;
+subplot(2,2,1);
+plot(unwrap(angle(testvna(1,:) ./ calvna(1,:))));
+subplot(2,2,2);
+plot(unwrap(angle(testvna(2,:) ./ calvna(2,:))));
+subplot(2,2,3);
+plot(unwrap(angle(testvna(3,:) ./ calvna(3,:))));
+subplot(2,2,4);
+plot(unwrap(angle(testvna(4,:) ./ calvna(4,:))));
+
+
+coeffs1 = polyfit(1:1601,unwrap(angle(testvna(1,:) ./ calvna(1,:))),1);
+coeffs2 = polyfit(1:1601,unwrap(angle(testvna(2,:) ./ calvna(2,:))),1);
+coeffs3 = polyfit(1:1601,unwrap(angle(testvna(3,:) ./ calvna(3,:))),1);
+coeffs4 = polyfit(1:1601,unwrap(angle(testvna(4,:) ./ calvna(4,:))),1);
+slp1 = coeffs1(1)
+slp2 = coeffs2(1)
+slp3 = coeffs3(1)
+slp4 = coeffs4(1)
+
 % close all
-% chinese_remainder(phases, frequencies)        
+% chinese_remainder(phases, frequencies)
+
+
+M = compute_multipath_profile_music(vnah(:,1), ant_pos, spacing*2, theta_vals);
+figure
+plot(M)
+
+
+
+
 
 
 
