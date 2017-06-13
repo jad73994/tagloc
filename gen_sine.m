@@ -9,4 +9,3 @@ plot(t, abs(x))
 write_complex_binary(x, '/home/abari/Desktop/austinmatlab/test_sine_0.dat');
 write_complex_binary(x, '/home/abari/Desktop/austinmatlab/test_sine_1.dat');
 write_complex_binary(x, '/home/abari/Desktop/austinmatlab/test_sine_2.dat');
- 

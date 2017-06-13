@@ -4,15 +4,15 @@ close all
 
 %% Script Parameters
 
-f_center = 2450;
+vnapoints = 1601;
 f_start = 2400;
 f_end = 2500;
-frequencies = [2431,2451,2471];
-vnapoints = 1601;
+freq = (2400:100/(vnapoints-1):2500)*1e6;
 
 instrreset
 vna = Vna('model', Vna.MODEL_AGILENT_E5071C, 'iface', Instr.INSTR_IFACE_TCPIP, 'tcpipAddress', '192.168.128.1', 'tcpipPort', 5025 );
 vna.SetTriggerContinuous;
+
 %set to f_start to f_end
 %set to 1601 points
 %turn off beep
@@ -20,7 +20,9 @@ vna.SetTriggerContinuous;
 num_antennas = 4;
 spacing = 0.5 * 0.1224;
 ant_pos = spacing * [0:num_antennas-1];
-theta_vals = (1:1:180)*pi/180;
+theta_vals_m = (1:1:180)*pi/180;
+theta_vals_s = (-90:1:90)*pi/180;
+d_vals = -50:1:50;
 
 
 %% Capture
@@ -99,8 +101,9 @@ testvna(2,:) = mean(testvna2temp);
 testvna(3,:) = mean(testvna3temp);
 testvna(4,:) = mean(testvna4temp);
 
-ftovna = round(((frequencies - f_start) ./ (f_end-f_start)) * vnapoints);
-vnah = calvna(:,ftovna)-testvna(:,ftovna);
+
+vnah = calvna-testvna;
+vnaa = angle(calvna) - angle(testvna);
 
 figure;
 subplot(2,2,1);
@@ -113,28 +116,53 @@ subplot(2,2,4);
 plot(unwrap(angle(testvna(4,:) ./ calvna(4,:))));
 
 
-coeffs1 = polyfit(1:1601,unwrap(angle(testvna(1,:) ./ calvna(1,:))),1);
-coeffs2 = polyfit(1:1601,unwrap(angle(testvna(2,:) ./ calvna(2,:))),1);
-coeffs3 = polyfit(1:1601,unwrap(angle(testvna(3,:) ./ calvna(3,:))),1);
-coeffs4 = polyfit(1:1601,unwrap(angle(testvna(4,:) ./ calvna(4,:))),1);
-slp1 = coeffs1(1)
-slp2 = coeffs2(1)
-slp3 = coeffs3(1)
-slp4 = coeffs4(1)
+coeffs1 = polyfit(1:vnapoints,unwrap(angle(testvna(1,:) ./ calvna(1,:))),1);
+coeffs2 = polyfit(1:vnapoints,unwrap(angle(testvna(2,:) ./ calvna(2,:))),1);
+coeffs3 = polyfit(1:vnapoints,unwrap(angle(testvna(3,:) ./ calvna(3,:))),1);
+coeffs4 = polyfit(1:vnapoints,unwrap(angle(testvna(4,:) ./ calvna(4,:))),1);
+slp = mean([coeffs1(1),coeffs2(1),coeffs3(1),coeffs4(1)]);
+delay_ns = ((((slp*vnapoints)/(2*pi))/100e6)*1e9)+3.45
+delay_cm = delay_ns * 29.98
 
+
+% 
 % close all
-% chinese_remainder(phases, frequencies)
+% chinese_remainder(angle(vnaa(2,:)), frequencies)
 
 
-M = compute_multipath_profile_music(vnah(:,1), ant_pos, spacing*2, theta_vals);
-figure
-plot(M)
+% M1 = compute_multipath_profile_music(vnah, ant_pos, spacing*2, theta_vals_m);
+% M2 = compute_multipath_profile_music(calvna, ant_pos, spacing*2, theta_vals_m);
+% M3 = compute_multipath_profile_music(testvna, ant_pos, spacing*2, theta_vals_m);
+% 
+% 
+% figure
+% subplot(3,1,1)
+% plot(M1)
+% subplot(3,1,2)
+% plot(M2)
+% subplot(3,1,3)
+% plot(M3)
+% 
+% 
+% [pks, locs] = findpeaks(M3,'MinPeakDistance',10,'MinPeakHeight',max(M3)/5);
+% if length(locs) == 1
+%     array_angle = locs(1)
+% end
+ 
 
 
+opt.threshold = 0.01; opt.freq = freq; opt.ant_sep = spacing;
+P = compute_spotfi_profile(testvna, theta_vals_s, d_vals, opt);
+figure; imagesc(d_vals, theta_vals_s*180/pi, abs(P));
 
+[maxvals,indices] = max(P);
+[maxval,index] = max(maxvals);
 
-
-
+max_angle = indices(index);
+max_delay = index;
+max_val = P(max_angle, max_delay)
+max_delay = d_vals(max_delay)
+max_angle = theta_vals_s(max_angle)/pi*180
 
 
 
