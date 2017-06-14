@@ -3,10 +3,11 @@ close all
  
 Fs = 10e6;   % Sample rate (Hz)
 channel_width = 2e6;
+freqsep = channel_width/4;
 nsamp = Fs/1e6;    % Number of samples per symbol
 num_syms = 1000;
 t = [1:(nsamp*num_syms)]*(1/Fs);
-preamble = 11100;
+preamble = [1,1,1,0,0];
 
 save gfsk_Parameters.mat
 

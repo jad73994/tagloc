@@ -11,9 +11,9 @@ A=zeros(1,length(rx_signal));
 B=zeros(1,length(rx_signal));
 intsum = cumsum(abs(rx_signal).^2);
 
-A(2*num_bins:end) = intsum(2*num_bins:end) - intsum(num_bins:end-num_bins);
-B(1+2*num_bins:end) = intsum(1+num_bins:end-num_bins) - intsum(1:end-2*num_bins);
-B(2*num_bins) = intsum(num_bins);
+A(2*nsamp:end) = intsum(2*nsamp:end) - intsum(nsamp:end-nsamp);
+B(1+2*nsamp:end) = intsum(1+nsamp:end-nsamp) - intsum(1:end-2*nsamp);
+B(2*nsamp) = intsum(nsamp);
 
 metric=A./B;
 if(isempty(metric > threshold))
