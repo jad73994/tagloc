@@ -2,16 +2,10 @@ function [ packet_start_index ] = gfsk_packet_detection(rx_signal)
 
 load gfsk_Parameters.mat
 
-figure
-plot(real(rx_signal))
-
 % Dc removal filter
 alpha = 0.975; 
 rx_signal = filter([1 -1], [1 -alpha], rx_signal);
 threshold=6;
-
-figure
-plot(real(rx_signal))
 
 A=zeros(1,length(rx_signal));
 B=zeros(1,length(rx_signal));

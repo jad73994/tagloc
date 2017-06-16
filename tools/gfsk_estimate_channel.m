@@ -14,8 +14,9 @@ H = rx_sym./tx_sym;
 H = fftshift(H.');
 
 hmf = abs(fftshift(tx_sym.'));
-[pts, xx] = findpeaks(hmf, 'MinPeakHeight', median(hmf)*4);
+[pts, xx] = findpeaks(hmf, 'MinPeakHeight', max(hmf)/10);
 yy = H(xx);
+
 
 fftplot(tx_sig, Fs, 11, 'r',1);
 fftplot(rx_signal, Fs, 11, 'g',1);
