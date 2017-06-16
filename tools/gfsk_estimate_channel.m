@@ -14,23 +14,25 @@ H = rx_sym./tx_sym;
 H = fftshift(H.');
 
 hmf = abs(fftshift(tx_sym.'));
-[pts, xx] = findpeaks(hmf, 'MinPeakHeight', max(hmf)/10);
+[pts, xx] = findpeaks(hmf, 'MinPeakHeight', max(hmf)/1000);
 yy = H(xx);
 
 
 fftplot(tx_sig, Fs, 11, 'r',1);
 fftplot(rx_signal, Fs, 11, 'g',1);
 
+
+
 figure(12); 
 subplot(2,1,1)
 hold all
-plot(abs(fftshift(tx_sym)))
-plot(abs(fftshift(rx_sym)))
-plot(abs(fftshift(H)))
+%plot(abs(fftshift(tx_sym)))
+%plot(abs(fftshift(rx_sym)))
+plot(abs(H))
 subplot(2,1,2)
 hold all
-plot(unwrap(angle(fftshift(tx_sym)))/pi)
-plot(unwrap(angle(fftshift(rx_sym)))/pi)
-plot(unwrap(angle(fftshift(H)))/pi)
+%plot(unwrap(angle(fftshift(tx_sym)))/pi)
+%plot(unwrap(angle(fftshift(rx_sym)))/pi)
+plot(unwrap(angle(H)))
 
 end

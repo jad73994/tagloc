@@ -4,7 +4,7 @@ close all
 %% Parameters
 Fs = 5e6;   % Sample rate (Hz)
 channel_width = 2e6;
-freqsep = channel_width/4;
+freqsep = channel_width/2;
 nsamp = Fs/1e6;    % Number of samples per symbol
 num_syms = 1000;
 num_bins = 500;
@@ -73,7 +73,7 @@ control_relays('lnaoff');
 
 
 y_gfsk = read_complex_binary2(strcat([dir,'rxdata/_0.dat']),2e7,0);
-
+   
 figure
 plot(real(y_gfsk))
 
@@ -92,12 +92,8 @@ for ant = 1:4
         [h_xx h_yy] = gfsk_estimate_channel(y_gfsk(pd+pdspace*(ant-1)+i*num_preambles*length(preamble)*nsamp:pd+pdspace*(ant-1)-1+(i+1)*num_preambles*length(preamble)*nsamp));
 
         for k=1:length(h_xx)
-            if h_xx(k) > num_bins*(1/5)
-                if h_xx(k) < num_bins*(4/5)
-                    h_xx_sum(h_xx(k)) = h_xx_sum(h_xx(k)) + 1;
-                    h_yy_sum(h_xx(k)) = h_yy_sum(h_xx(k)) + h_yy(k);
-                end
-            end
+            h_xx_sum(h_xx(k)) = h_xx_sum(h_xx(k)) + 1;
+            h_yy_sum(h_xx(k)) = h_yy_sum(h_xx(k)) + h_yy(k);
         end
     end
 
@@ -110,13 +106,41 @@ for ant = 1:4
         end
     end
     
-    h_final_r(ant,:) = interp1(h_final_x(ant,:), real(h_final_y(ant,:)), num_bins*(1/5):num_bins*(4/5));
-    h_final_i(ant,:) = interp1(h_final_x(ant,:), imag(h_final_y(ant,:)), num_bins*(1/5):num_bins*(4/5));
+    h_final_r(ant,:) = interp1(h_final_x(ant,:), real(h_final_y(ant,:)), num_bins*(0.5-(0.5*channel_width/Fs)):num_bins*(0.5+(0.5*channel_width/Fs)));
+    h_final_i(ant,:) = interp1(h_final_x(ant,:), imag(h_final_y(ant,:)), num_bins*(0.5-(0.5*channel_width/Fs)):num_bins*(0.5+(0.5*channel_width/Fs)));
     h_final(ant,:) = h_final_r(ant,:) + 1i*h_final_i(ant,:);
 end
 
 figure
-plot(num_bins*(1/5):num_bins*(4/5), abs(h_final(1,:)))
+plot(abs(h_final(1,:)))
 
 figure
-plot(num_bins*(1/5):num_bins*(4/5), unwrap(angle(h_final(1,:))))
+hold all
+plot(unwrap(angle(h_final(1,:))))
+plot(unwrap(angle(h_final(2,:))))
+plot(unwrap(angle(h_final(3,:))))
+plot(unwrap(angle(h_final(4,:))))
+
+
+
+
+num_antennas = 4;
+freq = (914:2/(num_bins*(channel_width/Fs)):916)*1e6;
+spacing = 0.5 * 0.1224;
+ant_pos = spacing * [0:num_antennas-1];
+theta_vals_m = (1:1:180)*pi/180;
+theta_vals_s = (-90:1:90)*pi/180;
+d_vals = -50:1:50;
+
+opt.threshold = 0.01; opt.freq = freq; opt.ant_sep = spacing;
+P = compute_spotfi_profile(h_final, theta_vals_s, d_vals, opt);
+figure; imagesc(d_vals, theta_vals_s*180/pi, abs(P));
+
+[maxvals,indices] = max(P);
+[maxval,index] = max(maxvals);
+
+max_angle = indices(index);
+max_delay = index;
+max_val = P(max_angle, max_delay)
+max_delay = d_vals(max_delay)
+max_angle = theta_vals_s(max_angle)/pi*180
