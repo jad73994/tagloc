@@ -127,7 +127,7 @@ for channel=1:length(frequencies)
 end
 
 h_final = gfsk_channel_stitching(h_final);
-h_final_subsampled = h_final(:,1:(length(h_final)-1)/29:length(h_final));
+h_final_subsampled = h_final(:,ceil(1:(length(h_final)-1)/29:length(h_final)));
 
 figure
 subplot(4,1,1)
