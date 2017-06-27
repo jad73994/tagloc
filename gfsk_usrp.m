@@ -18,7 +18,7 @@ gtrdir = '/home/abari/Projects/RFIT/uhd/host/build/mmimo/general_tx_rx';
 
 txips = 'addr0=192.168.30.2,addr1=192.168.40.2,addr2=192.168.50.2';
 rxips = 'addr0=192.168.60.2,addr1=192.168.70.2,addr2=192.168.80.2';
-frequencies = [916, 918, 920];
+frequencies = 916:2:956;
 
 
 save gfsk_Parameters.mat
@@ -48,99 +48,122 @@ for channel=1:length(frequencies)
     
     
     while flag == 0
-        
-        freqstr = strcat([int2str(frequencies(channel)),'e6,',int2str(frequencies(channel)),'e6,',int2str(frequencies(channel)),'e6']);
-        unix(strcat(['sudo python ',dir,'ttyexec.py pts/',txtty,' "sudo ', gtrdir,' --arg ',txips,' --rate ',int2str(Fs/1e6),'e6 --multifreq ',freqstr,' --ant TX/RX --ref EXTERNAL --tx_gain 20 --rx_gain 20"']));
-        unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "sudo ', gtrdir,' --arg ',rxips,' --rate ',int2str(Fs/1e6),'e6 --multifreq ',freqstr,' --ant TX/RX --ref EXTERNAL --tx_gain 20 --rx_gain 20"']));
+        close all
+        try
+            freqstr = strcat([int2str(frequencies(channel)),'e6,',int2str(frequencies(channel)),'e6,',int2str(frequencies(channel)),'e6']);
+            unix(strcat(['sudo python ',dir,'ttyexec.py pts/',txtty,' "sudo ', gtrdir,' --arg ',txips,' --rate ',int2str(Fs/1e6),'e6 --multifreq ',freqstr,' --ant TX/RX --ref EXTERNAL --tx_gain 20 --rx_gain 20"']));
+            unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "sudo ', gtrdir,' --arg ',rxips,' --rate ',int2str(Fs/1e6),'e6 --multifreq ',freqstr,' --ant TX/RX --ref EXTERNAL --tx_gain 20 --rx_gain 20"']));
 
-        control_relays('usrp');
-        control_relays('cal');
-        control_relays('lnaon');
-        control_relays('rcv1');
+            control_relays('usrp');
+            control_relays('cal');
+            control_relays('lnaon');
+            control_relays('rcv1');
 
-        pause(8);%wait for usrps to start and lock
+            pause(8);%wait for usrps to start and lock
 
-        unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "rx ',dir,'rxdata/ 20000000"']));
-        pause(0.1);
-        unix(strcat(['sudo python ',dir,'ttyexec.py pts/',txtty,' "tx ',dir,'gfsksig 30 1e2"']));
+            unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "rx ',dir,'rxdata/ 20000000"']));
+            pause(0.1);
+            unix(strcat(['sudo python ',dir,'ttyexec.py pts/',txtty,' "tx ',dir,'gfsksig 30 1e2"']));
 
-        pause(0.5);
-        control_relays('rcv2');
-        pause(0.5);
-        control_relays('rcv3');
-        pause(0.5);
-        control_relays('rcv4');
+            pause(0.5);
+            control_relays('rcv2');
+            pause(0.5);
+            control_relays('rcv3');
+            pause(0.5);
+            control_relays('rcv4');
 
-        pause(10);
-        unix(strcat(['sudo python ',dir,'ttyexec.py pts/',txtty,' "quit"']));
-        unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "quit"']));
-        control_relays('vna');
-        control_relays('rcvnone');
-        control_relays('cal');
-        control_relays('lnaoff');
+            pause(10);
+            control_relays('vna');
+            control_relays('rcvnone');
+            control_relays('cal');
+            control_relays('lnaoff');
+            unix(strcat(['sudo python ',dir,'ttyexec.py pts/',txtty,' "quit"']));
+            unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "quit"']));
 
 
-        y_gfsk = read_complex_binary2(strcat([dir,'rxdata/_0.dat']),2e7,0);
+            y_gfsk = read_complex_binary2(strcat([dir,'rxdata/_0.dat']),2e7,0);
 
-        figure
-        plot(real(y_gfsk))
+            figure(1)
+            plot(real(y_gfsk))
 
-        %% Packet Detection
+            %% Packet Detection
 
-        pd = gfsk_packet_detection(y_gfsk(1:1e6));
-        pdspace = 35e5;
+            pd = gfsk_packet_detection(y_gfsk(1:1e6));
+            pdspace = 35e5;
 
-        %% Channel Estimation
+            %% Channel Estimation
 
-        for ant = 1:4
-            [h_xx(ant,:) h_yy(ant,:)] = gfsk_estimate_channel(y_gfsk(pd+(ant-1)*pdspace:pd+num_syms*nsamp+1e3+(ant-1)*pdspace-1));
-        end
+            for ant = 1:4
+                [h_xx(ant,:) h_yy(ant,:)] = gfsk_estimate_channel(y_gfsk(pd+(ant-1)*pdspace:pd+num_syms*nsamp+1e3+(ant-1)*pdspace-1));
+            end
 
-        lval = max([h_xx(1,1),h_xx(2,1),h_xx(3,1),h_xx(4,1),(1.5/5)*6000]);
-        hval = min([h_xx(1,length(h_xx(1,:))),h_xx(2,length(h_xx(2,:))),h_xx(3,length(h_xx(3,:))),h_xx(4,length(h_xx(4,:))),(3.5/5)*6000]);
+            lval = max([h_xx(1,1),h_xx(2,1),h_xx(3,1),h_xx(4,1),(1.8/5)*6000]);
+            hval = min([h_xx(1,length(h_xx(1,:))),h_xx(2,length(h_xx(2,:))),h_xx(3,length(h_xx(3,:))),h_xx(4,length(h_xx(4,:))),(3.2/5)*6000]);
 
-        for ant=1:4
-            jc(ant,:) = dsearchn(h_xx(ant,:).',[lval:(hval-lval)/29:hval].');
-            freqs(ant,:) = h_xx(ant,jc(1,:));
-            h_cut(ant,:) = h_yy(ant,jc(ant,:));
-        end
+            for ant=1:4
+                jc(ant,:) = dsearchn(h_xx(ant,:).',[lval:(hval-lval)/29:hval].');
+                freqs(ant,:) = h_xx(ant,jc(1,:));
+                h_cut(ant,:) = h_yy(ant,jc(ant,:));
+            end
 
-        figure
-        subplot(2,1,1)
-        hold all
-        for i=1:4
-            plot(abs(h_cut(i,:)))
-        end
-        subplot(2,1,2)
-        hold all
-        for i=1:4
-            plot(unwrap(angle(h_cut(i,:))))
-        end
-        
-        resp = input('looks good?', 's');
-        if strcmp(resp,'y') || strcmp(resp,'yes')
-            flag = 1;
+            figure(2)
+            subplot(2,1,1)
+            hold all
+            for i=1:4
+                plot(abs(h_cut(i,:)))
+            end
+            subplot(2,1,2)
+            hold all
+            for i=1:4
+                plot(unwrap(angle(h_cut(i,:))))
+            end
+
+            resp = input('looks good?', 's');
+            if strcmp(resp,'y') || strcmp(resp,'yes')
+                flag = 1;
+            end
+        catch
+            warning('something broke')
         end
     end
 
     h_final(channel,:,:) = h_cut;
 end
 
-h_final = gfsk_channel_stitching(h_final);
-h_final_subsampled = h_final(:,ceil(1:(length(h_final)-1)/29:length(h_final)));
-
-figure
-subplot(4,1,1)
-plot(unwrap(angle(h_final(1,:))))
-subplot(4,1,2)
-plot(unwrap(angle(h_final(2,:))))
-subplot(4,1,3)
-plot(unwrap(angle(h_final(3,:))))
-subplot(4,1,4)
-plot(unwrap(angle(h_final(4,:))))
+h_final_zeros = gfsk_channel_zeros(h_final).';
 
 
-freq =  [915:6/29:921]*1e6;
+figure(3)
+subplot(2,2,1)
+hold all
+for i=1:length(frequencies)
+    plot(unwrap(angle(squeeze(h_final(i,1,:)))))
+end
+subplot(2,2,2)
+hold all
+for i=1:length(frequencies)
+    plot(unwrap(angle(squeeze(h_final(i,2,:)))))
+end
+subplot(2,2,3)
+hold all
+for i=1:length(frequencies)
+    plot(unwrap(angle(squeeze(h_final(i,3,:)))))
+end
+subplot(2,2,4)
+hold all
+for i=1:length(frequencies)
+    plot(unwrap(angle(squeeze(h_final(i,4,:)))))
+end
+
+
+figure(4)
+hold all
+for i=1:num_antennas
+    plot(unwrap(angle(h_final_zeros(i,:))))
+end
+
+
+freq =  [916:2:916+2*(length(frequencies)-1)]*1e6;
 spacing = 0.5 * 0.1224;
 ant_pos = spacing * [0:num_antennas-1];
 theta_vals_m = (1:1:180)*pi/180;
@@ -148,7 +171,7 @@ theta_vals_s = (-90:1:90)*pi/180;
 d_vals = -50:1:50;
 
 opt.threshold = 0.01; opt.freq = freq; opt.ant_sep = spacing;
-P = compute_spotfi_profile(h_final_subsampled, theta_vals_s, d_vals, opt);
+P = compute_spotfi_profile(h_final_zeros, theta_vals_s, d_vals, opt);
 figure; imagesc(d_vals, theta_vals_s*180/pi, abs(P));
 
 [maxvals,indices] = max(P);
