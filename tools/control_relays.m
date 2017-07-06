@@ -1,27 +1,27 @@
 function [] = control_relays(whattodo)
 
 %% Where the receive goes
-if strcmp(whattodo,'usrp')
-    urlread('http://192.168.1.4/30000/01'); %set to USRP
-    pause(0.2);
-end
-
-if strcmp(whattodo,'vna')
-    urlread('http://192.168.1.4/30000/00'); %set to VNA
-    pause(0.2);
-end
-
-
-%% Where the transmit goes
 if strcmp(whattodo,'cal')
-    urlread('http://192.168.1.4/30000/02'); %set to calibration channel
+    urlread('http://192.168.1.4/30000/01'); %set to wire
     pause(0.2);
 end
 
 if strcmp(whattodo,'test')
-    urlread('http://192.168.1.4/30000/03'); %set to test channel
+    urlread('http://192.168.1.4/30000/00'); %set to wireless
     pause(0.2);
 end
+
+
+% %% Where the transmit goes
+% if strcmp(whattodo,'cal')
+%     urlread('http://192.168.1.4/30000/02'); %set to calibration channel
+%     pause(0.2);
+% end
+% 
+% if strcmp(whattodo,'test')
+%     urlread('http://192.168.1.4/30000/03'); %set to test channel
+%     pause(0.2);
+% end
 
 
 %% LNAs on/off
