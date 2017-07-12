@@ -18,7 +18,7 @@ gtrdir = '/home/abari/Projects/RFIT/uhd/host/build/mmimo/general_tx_rx';
 
 txips = 'addr0=192.168.30.2,addr1=192.168.40.2,addr2=192.168.50.2';
 rxips = 'addr0=192.168.60.2,addr1=192.168.70.2,addr2=192.168.80.2';
-frequencies = 2400:4:2444;
+frequencies = 2400:8:2440;
 
 
 save gfsk_Parameters.mat

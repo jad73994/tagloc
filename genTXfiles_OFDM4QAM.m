@@ -22,9 +22,8 @@ factor=0.1;
 s=factor*s/max(abs(s));
 
 tx_signal=[1.*s];
-tx_signal = repmat(tx_signal,1, 1000);
-tx_signal = [tx_signal];
-tx_signal = [zeros(1,5e6) tx_signal];
+tx_signal = repmat(tx_signal,1, 10);
+tx_signal = [zeros(1,1e6) tx_signal];
 tx_signal = tx_signal .* exp((-1i*2*pi*fake_cfo/fs) .* [0:length(tx_signal)-1]);
 
 figure(4)
