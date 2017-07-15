@@ -3,6 +3,12 @@ function [ stitched ] = channel_stitching(channels)
 %channels is (frequency, antenna, bins)
 
 load Parameters.mat
+
+if length(frequencies) < 2
+    stitched = squeeze(channels(1,:,:));
+    return
+end
+
 offset_bins = length(gaurd_bins)*(frequencies(2) - frequencies(1) - 4);
 stitched = zeros(size(squeeze(channels(1,:,:))));
 
