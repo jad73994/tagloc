@@ -11,11 +11,11 @@ gtrdir = '/home/abari/Projects/RFIT/uhd/host/build/mmimo/general_tx_rx';
 txips = 'addr0=192.168.30.2,addr1=192.168.40.2,addr2=192.168.50.2';
 rxips = 'addr0=192.168.60.2,addr1=192.168.70.2,addr2=192.168.80.2';
 
-frequencies = 2402:4:2478;
+frequencies = 2432:8:2508;
 max_zp_std = 0.5;
 cfo_syms = 36;
 QAMsize = 2;
-num_ants = 4;
+num_ants = 7;
 
 packet_size = num_syms_preamble*num_bins + cp;
 packet_size = packet_size + (num_syms_data/QAMsize)*(num_bins+cp);
@@ -31,8 +31,8 @@ save tools/Parameters.mat
 
 
 %% Capture
-for run = 1:10
-    for f = 1:length(frequencies)
+%for run = 1:10
+    for f = [1:length(frequencies)]
         flag = 0;
         while flag == 0
             disp('capturing...');
@@ -43,32 +43,41 @@ for run = 1:10
 
             control_relays('cal');
             control_relays('lnaon');
-            control_relays('rcv1');
+            control_relays('ap1');
+            control_relays('ap1rcv1');
 
             pause(8);%wait for usrps to start and lock
 
-            unix(strcat(['sudo python ',dir,'ttyexec.py pts/',txtty,' "tx ',dir,'OFDM_fakecfo 80 "',int2str(packet_offset_ms)]));
+            unix(strcat(['sudo python ',dir,'ttyexec.py pts/',txtty,' "tx ',dir,'OFDM_fakecfo 100 "',int2str(packet_offset_ms)]));
             pause(2.5);
-            unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "rx ',dir,'rxdata/ 50000000"']));
+            unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "rx ',dir,'rxdata/ 80000000"']));
 
             pause(2);
             control_relays('test');
-            pause(1);
-            control_relays('rcv2');
-            pause(1);
-            control_relays('rcv3');
-            pause(1);
-            control_relays('rcv4');
+            pause(1.2);
+            control_relays('ap1rcv2');
+            pause(1.2);
+            control_relays('ap1rcv3');
+            pause(1.2);
+            control_relays('ap1rcv4');
+            pause(1.2);
+            control_relays('ap2');
+            control_relays('ap2rcv1');
+            pause(1.2);
+            control_relays('ap2rcv2');
+            pause(1.2);
+            control_relays('ap2rcv3');
+            pause(1.2);
+            control_relays('ap2rcv4');
 
             pause(10);
 
-            control_relays('rcvnone');
-            control_relays('lnaoff');
+            control_relays('alloff');
 
             unix(strcat(['sudo python ',dir,'ttyexec.py pts/',txtty,' "quit"']));
             unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "quit"']));
 
-            rx_signal = read_complex_binary2(strcat([dir,'rxdata/_0.dat']),5e7,0);
+            rx_signal = read_complex_binary2(strcat([dir,'rxdata/_0.dat']),8e7,0);
             rx_signal = rx_signal.';
 
             figure(1)
@@ -105,116 +114,75 @@ for run = 1:10
                 h_each(ant,33) = mean([h_each(ant,32) h_each(ant,34)]);
             end
             h_cut(f,:,:) = h_each(:,[7:59]);
-            h_save(run,f,:,:) = h_each(:,[7:59]);
+%            h_save(run,f,:,:) = h_each(:,[7:59]);
 
-%             figure(2)
-%             subplot(2,1,1)
-%             hold all
-%             for ant = 2:num_ants+1
-%                 plot(abs(squeeze(h_cut(f,ant,:))))
-%             end
-%             subplot(2,1,2)
-%             hold all
-%             for ant = 2:num_ants+1
-%                 plot(unwrap(angle(squeeze(h_cut(f,ant,:)))))
-%             end
+            figure(2)
+            subplot(2,1,1)
+            hold all
+            for ant = 2:num_ants+1
+                plot(abs(squeeze(h_cut(f,ant,:))))
+            end
+            subplot(2,1,2)
+            hold all
+            for ant = 2:num_ants+1
+                plot(unwrap(angle(squeeze(h_cut(f,ant,:)))))
+            end
 
-%             resp = input('looks good?', 's');
-%             if strcmp(resp,'y') || strcmp(resp,'yes')
-%                 flag=1;
-%             end
-            flag = 1;
+%            resp = input('looks good?', 's');
+%            if strcmp(resp,'y') || strcmp(resp,'yes')
+                flag=1;
+%            end
+
+%            flag = 1;
             
             close all
         end
     end
-end
+%end
 
 h_cald = h_cut(:,[2:num_ants+1],:);
 for i = 1:num_ants
-    h_cald(:,i,:) = exp(1i*(angle(h_cald(:,i,:))-angle(h_cut(:,1,:))));
+    %h_cald(:,i,:) = exp(1i*(angle(h_cald(:,i,:))-angle(h_cut(:,1,:))));
+    h_cald(:,i,:) = h_cald(:,i,:).*conj(h_cut(:,1,:));
 end
 h_cald_zeros = squeeze(h_cald(:,:,33)).';
 
 
-
-h = channel_stitching(h_cut(:,[2:num_ants+1],:));
-
-for i = 1:num_ants
-    for j = 1:length(h)
-        h(i,j) = exp(1i*angle(h(i,j)));
-    end
+h_cald_firstant = h_cut(:,[3:num_ants+1],:);
+for i = 1:(num_ants-1)
+    h_cald_firstant(:,i,:) = (h_cald_firstant(:,i,:)).*conj(h_cut(:,2,:));
 end
-
-s=robustfit(1:size(h,2),phase(h(4,:)));
-s(2)=s(2)+0.01;
-for i=1:num_ants
-    h(i,:)=h(i,:).*exp(-1j*s(2)*[1:length(h(i,:))]);
-end
+h_cald_firstant_zeros = squeeze(h_cald_firstant(:,:,33)).';
 
 
-
-
-
-
-figure(3)
-ax1=subplot(3,1,1)
-hold all
-for ant = 1:num_ants
-    plot(abs(h(ant,:)))
-end
-ax2=subplot(3,1,2)
-hold all
-for ant = 1:num_ants
-    plot(unwrap(angle(h(ant,:))))
-end
-ax3=subplot(3,1,3)
-hold all
-for ant = 1:num_ants
-    plot(angle(h(ant,:)))
-end
-linkaxes([ax1,ax2,ax3],'x')
-
-
-freq =  [(frequencies(1)-2):((frequencies(end)-frequencies(1)+4)/(length(h)-1)):(frequencies(end)+2)]*1e6;
+freq =  [(frequencies(1)-2):((frequencies(end)-frequencies(1)+4)/(length(h_cald_zeros)-1)):(frequencies(end)+2)]*1e6;
 spacing = 0.0625;
 theta_vals_m = (1:1:180)*pi/180;
 theta_vals_s = (-90:1:90)*pi/180;
 d_vals = -10:0.2:100;
 
-%zero subchannels before stitching
-% freq2 = freq([33:num_bins:length(freq)]);
-% h2 = h_cut(:,:,33).';
 
-%first sample before stitching
-% freq2 = freq([1:num_bins:length(freq)]);
-% h2 = h_cut(:,:,1).';
-
-% zero subchannels
-% freq2 = freq([5:(length(freq)/length(frequencies)):length(freq)]);
-% h2 = h(:,[5:(length(freq)/length(frequencies)):length(freq)]);
-
-%first sample
-% freq2 = freq([3:num_bins:length(freq)]);
-% h2 = h(:,[3:num_bins:length(freq)]);
-
-%first channel
-% freq2 = freq([1:52]);
-% h2 = h(:,[1:52]);
-
-%all
-% freq2 = freq;
-% h2 = h;
-
-%subsample
-freq2 = freq(1:8:end-4);
-h2 = h(:,1:8:end-4);
-
-
-opt.threshold = 0.01; opt.freq = freq2; opt.ant_sep = spacing;
-P = compute_spotfi_profile(h2, theta_vals_s, d_vals, opt);
-%figure; meshc(d_vals, theta_vals_s*180/pi, abs(P));
+% AP1 compared to wire 
+opt.threshold = 0.01; opt.freq = frequencies(1:10)*1e6; opt.ant_sep = spacing;
+P = compute_spotfi_profile(h_cald_zeros([1:3],[1:10]), theta_vals_s, d_vals, opt);
 figure; imagesc(d_vals, theta_vals_s*180/pi, abs(P));
+figure; meshc(d_vals, theta_vals_s*180/pi, db(abs(P)));
+
+
+% AP2 compared to wire 
+opt.threshold = 0.01; opt.freq = frequencies(1:10)*1e6; opt.ant_sep = spacing;
+P = compute_spotfi_profile(h_cald_zeros([4:6],[1:10]), theta_vals_s, d_vals, opt);
+figure; imagesc(d_vals, theta_vals_s*180/pi, abs(P));
+figure; meshc(d_vals, theta_vals_s*180/pi, db(abs(P)));
+
+
+% AP2 compared to AP1 ant1
+opt.threshold = 0.01; opt.freq = frequencies(1:10)*1e6; opt.ant_sep = spacing;
+P = compute_spotfi_profile(h_cald_firstant_zeros([4:6],[1:10]), theta_vals_s, d_vals, opt);
+figure; imagesc(d_vals, theta_vals_s*180/pi, abs(P));
+figure; meshc(d_vals, theta_vals_s*180/pi, db(abs(P)));
+
+
 
 [maxvals,indices] = max(P);
 [maxval,index] = max(maxvals);
@@ -226,18 +194,10 @@ max_delay = d_vals(max_delay)
 max_angle = theta_vals_s(max_angle)/pi*180
 
 
-
-opt.threshold = 0.01; opt.freq = frequencies*1e6; opt.ant_sep = spacing;
-P = compute_spotfi_profile(h_cald_zeros, theta_vals_s, d_vals, opt);
-figure; imagesc(d_vals, theta_vals_s*180/pi, abs(P));
-
-
-
-
-figure(123)
+figure(125)
 hold all
-for i=1
-    pro = compute_distance_profile_music(h(i,:), 3e8./freq, 2, [0:0.1:50]);
+for i=1:3
+    pro = compute_distance_profile(h_cald_zeros(i,[1:10]), 3e8./(frequencies(1:10)*1e6), 2, [0:0.1:50]);
     plot(abs(pro))
 end
 
@@ -245,6 +205,6 @@ end
 figure(124)
 hold all
 for i=1:num_ants
-    pro = compute_distance_profile_music(h_cald_zeros(i,:), 3e8./(frequencies*1e6), 2, [0:0.1:50]);
+    pro = compute_distance_profile_music(h_cald_firstant_zeros(i,:), 3e8./(frequencies*1e6), 2, [0:0.1:50]);
     plot(abs(pro))
 end
