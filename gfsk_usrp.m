@@ -46,8 +46,6 @@ write_complex_binary(x_gfsk, strcat([dir,'/gfsksig_2.dat']));
 for channel=1:length(frequencies)
     flag = 0;
     
-    
-    %while flag == 0
         close all
         try
             freqstr = strcat([int2str(frequencies(channel)),'e6,',int2str(frequencies(channel)),'e6,',int2str(frequencies(channel)),'e6']);
@@ -56,7 +54,8 @@ for channel=1:length(frequencies)
 
             control_relays('cal');
             control_relays('lnaon');
-            control_relays('rcv1');
+            control_relays('ap1');
+            control_relays('ap1rcv1');
 
             pause(8);%wait for usrps to start and lock
 
@@ -67,15 +66,14 @@ for channel=1:length(frequencies)
             pause(0.5);
             control_relays('test');
             pause(0.5);
-            control_relays('rcv2');
+            control_relays('ap1rcv2');
             pause(0.5);
-            control_relays('rcv3');
+            control_relays('ap1rcv3');
             pause(0.5);
-            control_relays('rcv4');
+            control_relays('ap1rcv4');
 
             pause(10);
-            control_relays('rcvnone');
-            control_relays('lnaoff');
+            control_relays('alloff');
             unix(strcat(['sudo python ',dir,'ttyexec.py pts/',txtty,' "quit"']));
             unix(strcat(['sudo python ',dir,'ttyexec.py pts/',rxtty,' "quit"']));
 
@@ -95,19 +93,15 @@ for channel=1:length(frequencies)
             h_cal(channel) = gfsk_partial_channel_estimate(y_gfsk(pd:(pd+(num_syms*nsamp)+1e3-1)));
 
             for ant = 2:(num_antennas+1)
-                h_final(channel,ant-1) = gfsk_partial_channel_estimate(y_gfsk(pd+(ant-1)*pdspace:pd+num_syms*nsamp+1e3+(ant-1)*pdspace-1))./h_cal(channel);
+                h_final(channel,ant-1) = gfsk_partial_channel_estimate(y_gfsk(pd+(ant-1)*pdspace:pd+num_syms*nsamp+1e3+(ant-1)*pdspace-1)).*conj(h_cal(channel));
             end
-        
-%             resp = input('looks good?', 's');
-%             if strcmp(resp,'y') || strcmp(resp,'yes')
-%                 flag = 1;
-%             end
         catch
             warning('something broke')
         end
-%     end
 end
 
+figure
+plot(unwrap(angle(h_final)))
 
 freq =  frequencies*1e6;
 spacing = 0.0625;
