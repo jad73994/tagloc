@@ -1,0 +1,1000 @@
+ 1010  make clean
+ 1011  make
+ 1012  cd src/
+ 1013  ./continuous_capture_rx_fd.exe 
+ 1014  cd ..
+ 1015  make clean
+ 1016  make
+ 1017  cd src/
+ 1018  ./continuous_capture_rx_fd.exe 
+ 1019  cd ..
+ 1020  cat system_top.bin > /dev/xdevcfg 
+ 1021  make clean
+ 1022  make
+ 1023  cd modules/
+ 1024  ./insert_and_reg_modules.sh 
+ 1025  cd ../src/
+ 1026  ./init_dma_regs.exe 
+ 1027  ./reset_board.exe 
+ 1028  ./start_tx_fd.exe 
+ 1029  ./continuous_capture_rx_fd.exe 
+ 1030  rm ../logs/samples.bin 
+ 1031  ./continuous_capture_rx_fd.exe 
+ 1032  top
+ 1033  kill 1994
+ 1034  gedit ../configs/bf_conf.txt
+ 1035  gedit ../configs/bf_conf.txt &
+ 1036  ./reset_board.exe 
+ 1037  ./start_tx_fd.exe 
+ 1038  ./continuous_capture_rx_fd.exe 
+ 1039  gedit ../configs/bf_conf.txt &
+ 1040  gedit continuous_capture_rx_fd.c &
+ 1041  cd ..
+ 1042  make clean
+ 1043  make
+ 1044  cd src/
+ 1045  ./reset_board.exe 
+ 1046  ./start_tx_fd.exe 
+ 1047  ./continuous_capture_rx_fd.exe 
+ 1048  cd ..
+ 1049  make clean
+ 1050  make
+ 1051  cd src/
+ 1052  ./continuous_capture_rx_fd.exe 
+ 1053  cd ..
+ 1054  make clean
+ 1055  make
+ 1056  cd src/
+ 1057  ./continuous_capture_rx_fd.exe 
+ 1058  cd ..
+ 1059  cd src/
+ 1060  ./reset_board.exe 
+ 1061  cd ..
+ 1062  cat system_top.bin > /dev/xdevcfg 
+ 1063  cd modules/
+ 1064  ./insert_and_reg_modules.sh 
+ 1065  cd ../src/
+ 1066  ./init_dma_regs.exe 
+ 1067  ./start_tx_fd.exe 
+ 1068  ./continuous_capture_rx_fd.exe 
+ 1069  ./reset_board.exe 
+ 1070  cd ..
+ 1071  cat system_top.bin > /dev/xdevcfg 
+ 1072  cd modules/
+ 1073  ./insert_and_reg_modules.sh 
+ 1074  cd ../src/
+ 1075  ./init_dma_regs.exe 
+ 1076  ./start_tx_fd.exe 
+ 1077  ./continuous_capture_rx_fd.exe 
+ 1078  ./reset_board.exe 
+ 1079  cd ..
+ 1080  cat system_top.bin > /dev/xdevcfg 
+ 1081  cd modules/
+ 1082  ./insert_and_reg_modules.sh 
+ 1083  cd ../src/
+ 1084  ./init_dma_regs.exe 
+ 1085  ./start_tx_fd.exe 
+ 1086  ./continuous_capture_rx_fd.exe 
+ 1087  cd ..
+ 1088  make clean
+ 1089  cat system_top.bin > /dev/xdevcfg 
+ 1090  cd modules/
+ 1091  ./insert_and_reg_modules.sh 
+ 1092  cd ../src/
+ 1093  ./i
+ 1094  ls
+ 1095  cd ..
+ 1096  make
+ 1097  cd src/
+ 1098  ./init_dma_regs.exe 
+ 1099  ./reset_board.exe 
+ 1100  ./start_tx_fd.exe 
+ 1101  ./get_rx_data_for_srs.exe 
+ 1102  ./reset_board.exe 
+ 1103  cd ..
+ 1104  make clean
+ 1105  make
+ 1106  cd src/
+ 1107  ./reset_board.exe 
+ 1108  ./start_tx_fd.exe 
+ 1109  ./continuous_capture_rx_fd.exe 
+ 1110  cd ..
+ 1111  make clean
+ 1112  make
+ 1113  cd src/
+ 1114  ./reset_board.exe 
+ 1115  ./start_tx_fd.exe 
+ 1116  ./continuous_capture_rx_fd.exe 
+ 1117  ./reset_board.exe 
+ 1118  ./start_tx_fd.exe 
+ 1119  ./capture_rx_buf.exe 
+ 1120  rm ../logs/samples.bin 
+ 1121  ./capture_rx_buf.exe 
+ 1122  cd ..
+ 1123  cat system_top.bin > /dev/xdevcfg 
+ 1124  cd modules/
+ 1125  ./insert_and_reg_modules.sh 
+ 1126  cd ../src/
+ 1127  ./init_dma_regs.exe 
+ 1128  ./reset_board.exe 
+ 1129  ./start_tx_fd.exe 
+ 1130  cd ..
+ 1131  make clean
+ 1132  make
+ 1133  cd src/
+ 1134  ./reset_board.exe 
+ 1135  ./start_tx_fd.exe 
+ 1136  ./capture_rx_buf.exe 
+ 1137  ./reset_board.exe 
+ 1138  ./start_tx_fd.exe 
+ 1139  ./capture_rx_buf.exe 
+ 1140  ./reset_board.exe 
+ 1141  ./start_tx_fd.exe 
+ 1142  ./capture_rx_buf.exe 
+ 1143  ./continuous_capture_rx_fd.exe 
+ 1144  cd ..
+ 1145  cd src/
+ 1146  cp continuous_capture_rx_fd.c joint_tx_rx_sync.c
+ 1147  gedit joint_tx_rx_sync.c 
+ 1148  ./reset_board.exe 
+ 1149  cd ..
+ 1150  make clean
+ 1151  make
+ 1152  make clean
+ 1153  make
+ 1154  make clean
+ 1155  make
+ 1156  cd src/
+ 1157  ./start_tx_fd.exe 
+ 1158  ./continuous_capture_rx_fd.exe 
+ 1159  cd ..
+ 1160  make clean
+ 1161  make
+ 1162  cd src/
+ 1163  ./continuous_capture_rx_fd.exe 
+ 1164  cd ..
+ 1165  make clean
+ 1166  make
+ 1167  cd src/
+ 1168  ./continuous_capture_rx_fd.exe 
+ 1169  cd ..
+ 1170  make clean
+ 1171  make
+ 1172  cd src/
+ 1173  ./continuous_capture_rx_fd.exe 
+ 1174  cd ../
+ 1175  make clean
+ 1176  make
+ 1177  make clean
+ 1178  make
+ 1179  cd src/
+ 1180  ./continuous_capture_rx_fd.exe 
+ 1181  cd ..
+ 1182  make clean
+ 1183  make
+ 1184  cd src/
+ 1185  ./continuous_capture_rx_fd.exe 
+ 1186  ./reset_board.exe 
+ 1187  cd ..
+ 1188  make clean
+ 1189  make
+ 1190  cd src/
+ 1191  ./start_tx_fd.exe 
+ 1192  ./continuous_capture_rx_fd.exe 
+ 1193  ./reset_board.exe 
+ 1194  cd ..
+ 1195  make clean
+ 1196  make
+ 1197  cd src/
+ 1198  ./start_tx_fd.exe 
+ 1199  ./continuous_capture_rx_fd.exe 
+ 1200  cd ..
+ 1201  make clean
+ 1202  make
+ 1203  make clean
+ 1204  make
+ 1205  cd src/
+ 1206  ./continuous_capture_rx_fd.exe 
+ 1207  cd ..
+ 1208  make clean
+ 1209  make
+ 1210  cd src/
+ 1211  ./continuous_capture_rx_fd.exe 
+ 1212  cd ..
+ 1213  make clean
+ 1214  make
+ 1215  cd src/
+ 1216  ./continuous_capture_rx_fd.exe 
+ 1217  cd ..
+ 1218  make clean
+ 1219  make
+ 1220  cd src/
+ 1221  ./continuous_capture_rx_fd.exe 
+ 1222  cd ..
+ 1223  make clean
+ 1224  make
+ 1225  make clean
+ 1226  make
+ 1227  make clean
+ 1228  make
+ 1229  cd src/
+ 1230  ./continuous_capture_rx_fd.exe 
+ 1231  cd ..
+ 1232  make clean
+ 1233  make
+ 1234  cd src/
+ 1235  ./continuous_capture_rx_fd.exe 
+ 1236  cd ..
+ 1237  make clean
+ 1238  make
+ 1239  cd src/
+ 1240  ./continuous_capture_rx_fd.exe 
+ 1241  cd ..
+ 1242  make clean
+ 1243  make
+ 1244  cd src/
+ 1245  ./continuous_capture_rx_fd.exe 
+ 1246  cd ..
+ 1247  make clean
+ 1248  make
+ 1249  cd src/
+ 1250  ./continuous_capture_rx_fd.exe 
+ 1251  cd ..
+ 1252  make clean
+ 1253  make
+ 1254  cd src/
+ 1255  ./continuous_capture_rx_fd.exe 
+ 1256  cd ..
+ 1257  make clean
+ 1258  make
+ 1259  cd src/
+ 1260  ./continuous_capture_rx_fd.exe 
+ 1261  cd ..
+ 1262  git status
+ 1263  git add src/continuous_capture_rx_fd.c
+ 1264  git commit -a -m "testing fine tracking with new format"
+ 1265  git push
+ 1266  make clean
+ 1267  make
+ 1268  cd src/
+ 1269  ./reset_board.exe 
+ 1270  ./start_tx_fd.exe 
+ 1271  ./continuous_capture_rx_fd.exe 
+ 1272  cd ..
+ 1273  make clean
+ 1274  make
+ 1275  cd src/
+ 1276  ./reset_board.exe 
+ 1277  ./start_tx_fd.exe 
+ 1278  ./capture_rx_buf.exe 
+ 1279  rm ../logs/samples.bin 
+ 1280  ./capture_rx_buf.exe 
+ 1281  ./reset_board.exe 
+ 1282  cd ..
+ 1283  make clean
+ 1284  cd ..
+ 1285  cd lte_sync_sw
+ 1286  make clean
+ 1287  make
+ 1288  make clean
+ 1289  make
+ 1290  git status
+ 1291  git add ./src/joint_tx_rx_sync.c
+ 1292  git commit -a -m "tx rx joint sync"
+ 1293  git push
+ 1294  cd src/
+ 1295  ./reset_board.exe 
+ 1296  ./start_tx_fd.exe 
+ 1297  ./capture_rx_buf.exe 
+ 1298  rm ../logs/samples.bin 
+ 1299  ./capture_rx_buf.exe 
+ 1300  ./reset_board.exe 
+ 1301  ./start_tx_fd.exe 
+ 1302  ./capture_rx_buf.exe 
+ 1303  cp joint_tx_rx_sync.c rx_streaming.c
+ 1304  gedit rx_streaming.c 
+ 1305  cd ..
+ 1306  make clean
+ 1307  make
+ 1308  make clean
+ 1309  make
+ 1310  cd src/
+ 1311  ./reset_board.exe 
+ 1312  ./rx_streaming.exe 
+ 1313  cd ..
+ 1314  make clean
+ 1315  make
+ 1316  cd src/
+ 1317  ./rx_streaming.exe 
+ 1318  cd ..
+ 1319  make clean
+ 1320  make
+ 1321  cd src/
+ 1322  ./rx_streaming.exe 
+ 1323  cd ..
+ 1324  git status
+ 1325  git add src/rx_streaming.c 
+ 1326  git commit -a -m "adding code for rx streaming"
+ 1327  git pull
+ 1328  git push
+ 1329  cd ./modules/
+ 1330  cd ../src/
+ 1331  cd LTE_sync_old/lte_sync_sw
+ 1332  cd src/
+ 1333  gedit joint_tx_rx_sync.c &
+ 1334  ./reset_board.exe 
+ 1335  cd ..
+ 1336  make clean
+ 1337  make
+ 1338  cd src/
+ 1339  ./start_tx_fd.exe 
+ 1340  ./capture_rx_buf.exe 
+ 1341  rm ../logs/samples.bin 
+ 1342  ./capture_rx_buf.exe 
+ 1343  ./reset_board.exe 
+ 1344  cd ..
+ 1345  git status
+ 1346  gedit src/start_tx_fd.c &
+ 1347  git commit -a -m "transmitting sync signal"
+ 1348  git pull
+ 1349  gedit src/start_tx_fd.c &
+ 1350  git push
+ 1351  cd src/
+ 1352  cp continuous_capture_rx_fd.c rx_with_hw_controller.c
+ 1353  gedit rx_with_hw_controller.c 
+ 1354  cd ..
+ 1355  make clean
+ 1356  git pull
+ 1357  make
+ 1358  git pull
+ 1359  make
+ 1360  make clean
+ 1361  make
+ 1362  make clean
+ 1363  git pull
+ 1364  make
+ 1365  cd src/
+ 1366  ./start_tx_fd.exe 
+ 1367  ./rx_with_hw_controller.exe 
+ 1368  cd ..
+ 1369  make clean
+ 1370  make
+ 1371  cd src/
+ 1372  ./rx_with_hw_controller.exe 
+ 1373  cd ..
+ 1374  make clean
+ 1375  make
+ 1376  cd src/
+ 1377  ./rx_with_hw_controller.exe 
+ 1378  cd ..
+ 1379  make clean
+ 1380  make
+ 1381  cd src/
+ 1382  ./rx_with_hw_controller.exe 
+ 1383  cd ..
+ 1384  make clean
+ 1385  make
+ 1386  cd src/
+ 1387  ./rx_with_hw_controller.exe 
+ 1388  reboot
+ 1389  cd LTE_sync_old/lte_sync_sw
+ 1390  ls
+ 1391  cat system_top.bin > /dev/xdevcfg 
+ 1392  cd modules/
+ 1393  ./insert_and_reg_modules.sh 
+ 1394  cd ../src/
+ 1395  ./init_dma_regs.exe 
+ 1396  ./start_tx_fd.exe 
+ 1397  ./rx_with_hw_controller.exe 
+ 1398  gedit rx_with_hw_controller.c &
+ 1399  cd ..
+ 1400  make clean
+ 1401  make
+ 1402  cd src/
+ 1403  ./rx_with_hw_controller.exe 
+ 1404  cd ..
+ 1405  make clean
+ 1406  make
+ 1407  cd src/
+ 1408  ./rx_with_hw_controller.exe 
+ 1409  cd ..
+ 1410  make clean
+ 1411  make
+ 1412  cd src/
+ 1413  ./rx_with_hw_controller.exe 
+ 1414  cd ..
+ 1415  make clean
+ 1416  make
+ 1417  cd src/
+ 1418  ./rx_with_hw_controller.exe 
+ 1419  cd ..
+ 1420  git pull
+ 1421  cd src/
+ 1422  cp rx_with_hw_controller.c rx_sw_tracking_using_csrs.c
+ 1423  cd ..
+ 1424  git add src/rx_sw_tracking_using_csrs.c 
+ 1425  git status
+ 1426  git commit -a -m "control loop using cell specific reference signal"
+ 1427  git push
+ 1428  ./re
+ 1429  cd src/
+ 1430  ./reset_board.exe 
+ 1431  ./start_tx_fd.exe 
+ 1432  ./capture_rx_buf.exe 
+ 1433  rm ../logs/samples.bin 
+ 1434  ./capture_rx_buf.exe 
+ 1435  ./rx_with_hw_controller.exe 
+ 1436  ./reset_board.exe 
+ 1437  ./start_tx_fd.exe 
+ 1438  ./rx_with_hw_controller.exe 
+ 1439  cd ..
+ 1440  make clean
+ 1441  make
+ 1442  cd src/
+ 1443  ./rx_with_hw_controller.exe 
+ 1444  cd ..
+ 1445  make clean
+ 1446  make
+ 1447  make clean
+ 1448  make
+ 1449  cd src/
+ 1450  ./rx_with_hw_controller.exe 
+ 1451  cd ..
+ 1452  make clean
+ 1453  make
+ 1454  cd src/
+ 1455  ./reset_board.exe 
+ 1456  ./start_tx_fd.exe 
+ 1457  ./rx_with_hw_controller.exe 
+ 1458  cd ..
+ 1459  make clean
+ 1460  make
+ 1461  cd src/
+ 1462  ./rx_with_hw_controller.exe 
+ 1463  ./reset_board.exe 
+ 1464  reboot
+ 1465  cd LTE_sync_old/lte_sync_sw
+ 1466  cat system_top.bin > /dev/xdevcfg 
+ 1467  cd modules/
+ 1468  ./insert_and_reg_modules.sh 
+ 1469  cd ../src/
+ 1470  ./init_dma_regs.exe 
+ 1471  ./start_tx_fd.exe 
+ 1472  ./rx_with_hw_controller.exe 
+ 1473  gedit rx_with_hw_controller.c &
+ 1474  cd ..
+ 1475  make clean
+ 1476  make
+ 1477  cd src/
+ 1478  ./rx_with_hw_controller.exe 
+ 1479  cd ..
+ 1480  make clean
+ 1481  make
+ 1482  cd src/
+ 1483  ./rx_with_hw_controller.exe 
+ 1484  cd ..
+ 1485  make clean
+ 1486  make
+ 1487  cd src/
+ 1488  ./rx_with_hw_controller.exe 
+ 1489  cd ..
+ 1490  make clean
+ 1491  make
+ 1492  cd src/
+ 1493  ./rx_with_hw_controller.exe 
+ 1494  cd ..
+ 1495  make clean
+ 1496  make
+ 1497  cd src/
+ 1498  ./rx_with_hw_controller.exe 
+ 1499  cd ..
+ 1500  make clean
+ 1501  make
+ 1502  cd src/
+ 1503  ./rx_with_hw_controller.exe 
+ 1504  cd ..
+ 1505  make clean
+ 1506  make
+ 1507  cd src/
+ 1508  ./rx_with_hw_controller.exe 
+ 1509  cd ..
+ 1510  make clean
+ 1511  make
+ 1512  cd src/
+ 1513  ./rx_with_hw_controller.exe 
+ 1514  cd ..
+ 1515  cd src/
+ 1516  ./reset_board.exe 
+ 1517  cd ..
+ 1518  cat system_top.bin > /dev/xdevcfg 
+ 1519  cd modules/
+ 1520  ./insert_and_reg_modules.sh 
+ 1521  cd ../src/
+ 1522  ./init_dma_regs.exe 
+ 1523  ./start_tx_fd.exe 
+ 1524  ./rx_with_hw_controller.exe 
+ 1525  cd ..
+ 1526  make clean
+ 1527  make
+ 1528  cd src/
+ 1529  ./rx_with_hw_controller.exe 
+ 1530  cd ..
+ 1531  make clean
+ 1532  make
+ 1533  cd src/
+ 1534  ./rx_with_hw_controller.exe 
+ 1535  CD ..
+ 1536  MAKE CLEAN
+ 1537  cd ..
+ 1538  make clean
+ 1539  make
+ 1540  cd src/
+ 1541  ./rx_with_hw_controller.exe 
+ 1542  cd ..
+ 1543  make clean
+ 1544  make
+ 1545  cd src/
+ 1546  ./rx_with_hw_controller.exe 
+ 1547  cd ..
+ 1548  cat system_top.bin > /dev/xdevcfg 
+ 1549  cd modules/
+ 1550  ./insert_and_reg_modules.sh 
+ 1551  cd ../src/
+ 1552  ./init_dma_regs.exe 
+ 1553  ./reset_board.exe 
+ 1554  ./start_tx_fd.exe 
+ 1555  ./rx_with_hw_controller.exe 
+ 1556  cd ..
+ 1557  make clean
+ 1558  make
+ 1559  make clean
+ 1560  make
+ 1561  cd src/
+ 1562  ./rx_with_hw_controller.exe 
+ 1563  ./reset_board.exe 
+ 1564  ./start_tx_fd.exe 
+ 1565  ./rx_with_hw_controller.exe 
+ 1566  cd ..
+ 1567  make clean
+ 1568  make
+ 1569  make clean
+ 1570  make
+ 1571  cd src/
+ 1572  ./rx_with_hw_controller.exe 
+ 1573  cd ..
+ 1574  make clean
+ 1575  make
+ 1576  make clean
+ 1577  make
+ 1578  cd src/
+ 1579  ./reset_board.exe 
+ 1580  ./start_tx_fd.exe 
+ 1581  ./rx_with_hw_controller.exe 
+ 1582  cd ..
+ 1583  make clean
+ 1584  make
+ 1585  make clean
+ 1586  make
+ 1587  cd src/
+ 1588  ./rx_with_hw_controller.exe 
+ 1589  cd ..
+ 1590  make clean
+ 1591  make
+ 1592  cd src/
+ 1593  ./rx_with_hw_controller.exe 
+ 1594  cd ..
+ 1595  make clean
+ 1596  make
+ 1597  cd src/
+ 1598  ./rx_with_hw_controller.exe 
+ 1599  ./reset_board.exe 
+ 1600  ./start_tx_fd.exe 
+ 1601  ./rx_with_hw_controller.exe 
+ 1602  ./reset_board.exe 
+ 1603  ./start_tx_fd.exe 
+ 1604  ./rx_with_hw_controller.exe 
+ 1605  cd ..
+ 1606  make clean
+ 1607  make
+ 1608  cd src/
+ 1609  ./rx_with_hw_controller.exe 
+ 1610  ./reset_board.exe 
+ 1611  ./rx_with_hw_controller.exe 
+ 1612  ./reset_board.exe 
+ 1613  ./start_tx_fd.exe 
+ 1614  ./rx_with_hw_controller.exe 
+ 1615  cd ..
+ 1616  make clean
+ 1617  make
+ 1618  cd src/
+ 1619  ./rx_with_hw_controller.exe 
+ 1620  cd ..
+ 1621  make clean
+ 1622  make
+ 1623  cd src/
+ 1624  ./rx_with_hw_controller.exe 
+ 1625  cd .
+ 1626  cd ..
+ 1627  make clean
+ 1628  make
+ 1629  cd src/
+ 1630  ./rx_with_hw_controller.exe 
+ 1631  cd ..
+ 1632  make clean
+ 1633  make
+ 1634  cd src/
+ 1635  ./rx_with_hw_controller.exe 
+ 1636  cd ..
+ 1637  make clean
+ 1638  make
+ 1639  cd src/
+ 1640  ./rx_with_hw_controller.exe 
+ 1641  cd ..
+ 1642  make clean
+ 1643  make
+ 1644  cd src/
+ 1645  ./rx_with_hw_controller.exe 
+ 1646  cd ..
+ 1647  make clean
+ 1648  make
+ 1649  cd src/
+ 1650  ./rx_with_hw_controller.exe 
+ 1651  cd ..
+ 1652  git status
+ 1653  git add src/rx_with_hw_controller.c
+ 1654  git pull
+ 1655  git push
+ 1656  git commit -a -m "receiving with hw controller"
+ 1657  git push
+ 1658  cd src/
+ 1659  ./reset_board.exe 
+ 1660  ./start_tx_fd.exe 
+ 1661  ./reset_board.exe 
+ 1662  ./start_tx_fd.exe 
+ 1663  cd ..
+ 1664  make clean
+ 1665  make
+ 1666  cd src/
+ 1667  ./rx_with_hw_controller.exe 
+ 1668  cd ..
+ 1669  make clean
+ 1670  make
+ 1671  cd src/
+ 1672  ./rx_with_hw_controller.exe 
+ 1673  git status
+ 1674  ./reset_board.exe 
+ 1675  ./start_tx_fd.exe 
+ 1676  ./reset_board.exe 
+ 1677  cd ..
+ 1678  cat system_top.bin > /dev/xdevcfg 
+ 1679  cd modules/
+ 1680  ./insert_and_reg_modules.sh 
+ 1681  cd ../src/
+ 1682  ./init_dma_regs.exe 
+ 1683  ./start_tx_fd.exe 
+ 1684  ./rx_with_hw_controller.exe 
+ 1685  cd ..
+ 1686  make clean
+ 1687  make
+ 1688  cd src/
+ 1689  ./reset_board.exe 
+ 1690  ./start_tx_fd.exe 
+ 1691  ./reset_board.exe 
+ 1692  ./start_tx_fd.exe ../data/lte_tx_from_srs_with_sync_signal.bin 
+ 1693  cd ..
+ 1694  make clean
+ 1695  make
+ 1696  cd src/
+ 1697  ./start_tx_fd.exe ../data/lte_tx_from_srs_with_sync_signal.bin 
+ 1698  cd ..
+ 1699  make clean
+ 1700  make
+ 1701  cd src/
+ 1702  ./start_tx_fd.exe ../data/lte_tx_from_srs_with_sync_signal.bin 
+ 1703  cd ..
+ 1704  make clean
+ 1705  make
+ 1706  make clean
+ 1707  make
+ 1708  cd src/
+ 1709  ./reset_board.exe 
+ 1710  ./start_tx_fd.exe 
+ 1711  ./start_tx_fd.exe ../data/lte_tx_from_srs_with_sync_signal.bin 
+ 1712  ./reset_board.exe 
+ 1713  ./start_tx_fd.exe ../data/lte_tx_from_srs_with_sync_signal_2.bin 
+ 1714  cd ..
+ 1715  git status
+ 1716  git commit -a -m "changing the start tx program"
+ 1717  git pull
+ 1718  git push
+ 1719  cd src/
+ 1720  ./reset_board.exe 
+ 1721  cd ..
+ 1722  cd modules/
+ 1723  cd ..
+ 1724  cat system_top.bin > /dev/xdevcfg 
+ 1725  cd modules/
+ 1726  ./insert_and_reg_modules.sh 
+ 1727  cd ../src/
+ 1728  ./init_dma_regs.exe 
+ 1729  ./start_tx_fd.exe ../data/lte_tx_joint_tx_master.bin 
+ 1730  ./rx_with_hw_controller.exe 
+ 1731  cd ..
+ 1732  make clean
+ 1733  make
+ 1734  git status
+ 1735  git commit -a -m "using 1 rx antenna and adding the new fpga bin file"
+ 1736  git push
+ 1737  cd src/
+ 1738  ./reset_board.exe 
+ 1739  ./start_tx_fd.exe ../data/lte_tx_joint_tx_master.bin 
+ 1740  ./reset_board.exe 
+ 1741  ./start_tx_fd.exe ../data/lte_tx_from_srs_with_sync_signal.bin 
+ 1742  cd ..
+ 1743  git status
+ 1744  git commit -a -m "increase rx gain"
+ 1745  git push
+ 1746  make clean
+ 1747  make
+ 1748  cd src/
+ 1749  ./start_tx_fd.exe ../data/lte_tx_from_srs_with_sync_signal.bin 
+ 1750  ./reset_board.exe 
+ 1751  ./start_tx_fd.exe ../data/lte_tx_from_srs_with_sync_signal.bin 
+ 1752  ./rx_with_hw_controller.exe 
+ 1753  cd ..
+ 1754  make clean
+ 1755  make
+ 1756  cd src/
+ 1757  ./rx_with_hw_controller.exe 
+ 1758  cd ..
+ 1759  make clean
+ 1760  make
+ 1761  cd src/
+ 1762  ./rx_with_hw_controller.exe 
+ 1763  cd ..
+ 1764  make clean
+ 1765  make
+ 1766  cd src/
+ 1767  ./rx_with_hw_controller.exe 
+ 1768  cd ..
+ 1769  make clean
+ 1770  make
+ 1771  cd src/
+ 1772  ./rx_with_hw_controller.exe 
+ 1773  cd ..
+ 1774  git status
+ 1775  git commit -a -m "using second antenna port alone"
+ 1776  git push
+ 1777  cd src/
+ 1778  ./reset_board.exe 
+ 1779  ./start_tx_fd.exe 
+ 1780  ./start_tx_fd.exe ../data/lte_tx_from_srs_with_sync_signal.bin 
+ 1781  cd ..
+ 1782  make clean
+ 1783  make
+ 1784  cd src/
+ 1785  ./reset_board.exe 
+ 1786  ./start_tx_fd.exe ../data/lte_tx_from_srs_with_sync_signal.bin 
+ 1787  ./rx_with_hw_controller.exe 
+ 1788  ./reset_board.exe 
+ 1789  ./start_tx_fd.exe ../data/lte_tx_from_srs_with_sync_signal.bin 
+ 1790  ./rx_with_hw_controller.exe 
+ 1791  cd ..
+ 1792  make clean
+ 1793  make
+ 1794  git commit -a -m "using first antenna port alone"
+ 1795  git push
+ 1796  cd src/
+ 1797  ./reset_board.exe 
+ 1798  ./start_tx_fd.exe ../data/lte_tx_from_srs_with_sync_signal.bin 
+ 1799  cd ..
+ 1800  git commit -a -m "slower control loop"
+ 1801  git push
+ 1802  cd src/
+ 1803  cp rx_with_hw_controller.c joint_tx_with_hw_sync.c
+ 1804  gedit joint_tx_with_hw_sync.c &
+ 1805  cd ..
+ 1806  make clean
+ 1807  make
+ 1808  make clean
+ 1809  make
+ 1810  git status
+ 1811  git add src/joint_tx_with_hw_sync.c
+ 1812  git commit -a -m "adding joint tx with hw sync"
+ 1813  git push
+ 1814  cd src/
+ 1815  ./reset_board.exe 
+ 1816  ./start_tx_fd.exe ../data/lte_tx_joint_tx_master.bin 
+ 1817  cd 
+ 1818  cd LTE_sync_old/lte_sync_sw
+ 1819  git status
+ 1820  git pull
+ 1821  make clean
+ 1822  make
+ 1823  cd src/
+ 1824  ./reset_board.exe 
+ 1825  ./start_tx_fd.exe ../data/lte_tx_joint_tx_master.bin 
+ 1826  cd ..
+ 1827  make clean
+ 1828  make
+ 1829  cd src/
+ 1830  ./capture_rx_buf.exe 
+ 1831  rm ../logs/samples.bin 
+ 1832  ./capture_rx_buf.exe 
+ 1833  ./reset_board.exe 
+ 1834  ./start_tx_fd.exe ../data/lte_tx_joint_tx_master.bin 
+ 1835  ./reset_board.exe 
+ 1836  ./start_tx_fd.exe ../data/lte_tx_joint_tx_master.bin 
+ 1837  ./reset_board.exe 
+ 1838  ./start_tx_fd.exe ../data/lte_tx_joint_tx_master.bin 
+ 1839  cd ..
+ 1840  git status
+ 1841  cd src/
+ 1842  ./reset_board.exe 
+ 1843  cd ..
+ 1844  git pull
+ 1845  make clean
+ 1846  make
+ 1847  shutdown -h now
+ 1848  exit
+ 1849  cd LTE_sync_old/
+ 1850  cd lte_sync_sw
+ 1851  git pull
+ 1852  cat system_top.bin > /dev/xdevcfg 
+ 1853  cd modules/
+ 1854  ./insert_and_reg_modules.sh 
+ 1855  cd ../src/
+ 1856  ./init_dma_regs.exe 
+ 1857  cd
+ 1858  cd lte_sync/
+ 1859  ls
+ 1860  make clean
+ 1861  make
+ 1862  cat system_top.bin > /dev/xdevcfg 
+ 1863  cd modules/
+ 1864  ./insert_and_reg_modules.sh 
+ 1865  cd ../src/
+ 1866  ./init_dma_regs.exe 
+ 1867  cd ..
+ 1868  make clean
+ 1869  make
+ 1870  make clean
+ 1871  make
+ 1872  make clean
+ 1873  make
+ 1874  make clean
+ 1875  make
+ 1876  cd src/
+ 1877  ./joint_tx_with_hw_sync.exe ../joint_tx_files/lte_joint_tx_layer_2.bin 1
+ 1878  cd ..
+ 1879  mkdir logs
+ 1880  cd src/
+ 1881  ./reset_board.exe 
+ 1882  ./joint_tx_with_hw_sync.exe ../joint_tx_files/lte_joint_tx_layer_2.bin 1
+ 1883  ./reset_board.exe 
+ 1884  ./rx_with_hw_controller.exe 
+ 1885  ./joint_tx_with_hw_sync.exe ../joint_tx_files/lte_joint_tx_layer_2.bin 1
+ 1886  ./reset_board.exe 
+ 1887  ./joint_tx_with_hw_sync.exe ../joint_tx_files/lte_joint_tx_layer_2.bin 1
+ 1888  ./reset_board.exe 
+ 1889  ./joint_tx_with_hw_sync.exe ../joint_tx_files/lte_joint_tx_layer_2.bin 1
+ 1890  ./reset_board.exe 
+ 1891  cd ..
+ 1892  make clean
+ 1893  make
+ 1894  cd src/
+ 1895  ./rx_with_hw_controller.exe 
+ 1896  ./reset_board.exe 
+ 1897  ./rx_with_hw_controller.exe 
+ 1898  cd ..
+ 1899  make clean
+ 1900  make
+ 1901  cat system_top.bin > /dev/xdevcfg 
+ 1902  cd modules/
+ 1903  ./insert_and_reg_modules.sh 
+ 1904  cd ../src/
+ 1905  ./init_dma_regs.exe 
+ 1906  ./reset_board.exe 
+ 1907  ./rx_with_hw_controller.exe 
+ 1908  ./reset_board.exe 
+ 1909  shutdown -h now
+ 1910  cd lte_deploy/
+ 1911  ./init_board.sh 
+ 1912  cd src/
+ 1913  ./reset_board.exe 
+ 1914  ./rx_with_hw_controller.exe 1 680
+ 1915  ./reset_board.exe 
+ 1916  ./rx_with_hw_controller.exe 1 680
+ 1917  vi ../configs/bf_conf.txt 
+ 1918  less ../configs/bf_conf.txt 
+ 1919  ./rx_with_hw_controller.exe 1 680
+ 1920  vi ../configs/bf_conf.txt 
+ 1921  ./reset_board.exe 
+ 1922  ./rx_with_hw_controller.exe 1 680
+ 1923  ./reset_board.exe 
+ 1924  ./rx_with_hw_controller.exe 1 680
+ 1925  ./reset_board.exe 
+ 1926  ./rx_with_hw_controller.exe 1 680
+ 1927  ./reset_board.exe 
+ 1928  ./rx_with_hw_controller.exe 1 680
+ 1929  ./reset_board.exe 
+ 1930  ./rx_with_hw_controller.exe 1 680
+ 1931  ./reset_board.exe 
+ 1932  ./rx_with_hw_controller.exe 1 680
+ 1933  ./reset_board.exe 
+ 1934  ./rx_with_hw_controller.exe 1 680
+ 1935  ./reset_board.exe 
+ 1936  ./rx_with_hw_controller.exe 1 680
+ 1937  ./reset_board.exe 
+ 1938  ./rx_with_hw_controller.exe 1 680
+ 1939  ./reset_board.exe 
+ 1940  ./rx_with_hw_controller.exe 1 680
+ 1941  ./reset_board.exe 
+ 1942  ./rx_with_hw_controller.exe 1 680
+ 1943  ./reset_board.exe 
+ 1944  ./rx_with_hw_controller.exe 1 680
+ 1945  ./reset_board.exe 
+ 1946  ./rx_with_hw_controller.exe 1 680
+ 1947  ./reset_board.exe 
+ 1948  ./rx_with_hw_controller.exe 1 680
+ 1949  ./reset_board.exe 
+ 1950  ./rx_with_hw_controller.exe 1 680
+ 1951  ./reset_board.exe 
+ 1952  ./rx_with_hw_controller.exe 1 680
+ 1953  ./reset_board.exe 
+ 1954  ./rx_with_hw_controller.exe 1 680
+ 1955  ./reset_board.exe 
+ 1956  ./rx_with_hw_controller.exe 1 680
+ 1957  ./reset_board.exe 
+ 1958  ./rx_with_hw_controller.exe 1 680
+ 1959  ./reset_board.exe 
+ 1960  ./rx_with_hw_controller.exe 1 680
+ 1961  ./reset_board.exe 
+ 1962  ./rx_with_hw_controller.exe 1 680
+ 1963  ./reset_board.exe 
+ 1964  ./rx_with_hw_controller.exe 1 680
+ 1965  ./reset_board.exe 
+ 1966  ./rx_with_hw_controller.exe 1 680
+ 1967  ./reset_board.exe 
+ 1968  ./rx_with_hw_controller.exe 1 680
+ 1969  ./reset_board.exe 
+ 1970  ./rx_with_hw_controller.exe 1 680
+ 1971  ./reset_board.exe 
+ 1972  ./rx_with_hw_controller.exe 1 680
+ 1973  ./reset_board.exe 
+ 1974  ./rx_with_hw_controller.exe 1 680
+ 1975  ./reset_board.exe 
+ 1976  ./rx_with_hw_controller.exe 1 680
+ 1977  ./reset_board.exe 
+ 1978  ./rx_with_hw_controller.exe 1 680
+ 1979  ./reset_board.exe 
+ 1980  ./rx_with_hw_controller.exe 1 680
+ 1981  ./reset_board.exe 
+ 1982  ./rx_with_hw_controller.exe 1 680
+ 1983  ./reset_board.exe 
+ 1984  ./rx_with_hw_controller.exe 1 680
+ 1985  ./reset_board.exe 
+ 1986  ./rx_with_hw_controller.exe 1 680
+ 1987  ./reset_board.exe 
+ 1988  ./rx_with_hw_controller.exe 1 680
+ 1989  ./reset_board.exe 
+ 1990  ./rx_with_hw_controller.exe 1 680
+ 1991  ./reset_board.exe 
+ 1992  ./rx_with_hw_controller.exe 1 680
+ 1993  ./reset_board.exe 
+ 1994  ./rx_with_hw_controller.exe 1 680
+ 1995  ./reset_board.exe 
+ 1996  ./rx_with_hw_controller.exe 1 680
+ 1997  ls
+ 1998  logout
+ 1999  cd lte_deploy/
+ 2000  ./init_board.sh dev
+ 2001  cd src/
+ 2002  ./start_tx_fd.exe ../joint_tx_files/TDD_lte_frame.bin 
+ 2003  ./reset_board.exe 
+ 2004  ./start_tx_fd.exe ../joint_tx_files/TDD_lte_frame.bin 
+ 2005  vi ../configs/bf_conf.txt 
+ 2006  ./reset_board.exe 
+ 2007  ./start_tx_fd.exe ../joint_tx_files/TDD_lte_frame.bin 
+ 2008  history ~/ezz_discussion_20.txt
+ 2009  history >~/ezz_discussion_20.txt
