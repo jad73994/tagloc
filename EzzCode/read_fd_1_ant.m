@@ -1,6 +1,6 @@
 
 length_sec=60;
-f=fopen('samples.bin','rb');
+f=fopen('mmdata/tag.bin','rb');
 %f=fopen('samples_tbviv7_low_snr.bin','rb');
 t=fread(f,length_sec*180*14*1000,'uint32');
 fclose(f);

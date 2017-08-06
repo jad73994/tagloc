@@ -27,7 +27,7 @@ P_out=zeros(length(d2),length(d1));
 
 IDX1=sub2ind(size(P1),T_IDX_1,D_IDX_1);
 IDX2=sub2ind(size(P2),T_IDX_2,D_IDX_2);
-P_out(:)=(P1(IDX1)+P2(IDX2))/2;
+P_out(:)=P1(IDX1).*P2(IDX2);
 end
 
 function [T_IDX,D_IDX]=compute_idx(ap_pos,ant_pos, d1,d2,d_vals,theta_vals)

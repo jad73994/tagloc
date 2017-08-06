@@ -1,4 +1,4 @@
-f=fopen('samplex_rx.bin','rb');
+f=fopen('mmdata/ap2.bin','rb');
 t=fread(f,'uint32');
 fclose(f);
 

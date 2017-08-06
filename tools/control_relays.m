@@ -1,5 +1,10 @@
 function [] = control_relays(whattodo)
-
+% If L1 is red, then cal, else test
+% If L2 is red, then ap1, else ap 2
+% If L8 is red, then LNA is on
+% If L13-L16: AP1 rcv 1 to 4 respectively, if red. Should be exclusive.
+% If L9-L12: AP2 rcv 1 to 4 respectively, if red. Should be exclusive.
+% If receiving on AP1, turn all other APs off.
 %% Wire or wireless
 if strcmp(whattodo,'cal')
     urlread('http://192.168.1.4/30000/01'); %set to wire
