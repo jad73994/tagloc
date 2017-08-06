@@ -1,4 +1,6 @@
-
+%% read_fd_1_ant.m
+% Reads frequency domain signal
+% Need to change file in fopen
 length_sec=60;
 f=fopen('mmdata/tag.bin','rb');
 %f=fopen('samples_tbviv7_low_snr.bin','rb');
@@ -26,4 +28,8 @@ clear('real_data');
 clear('t');
 ch_reshaped=reshape(Ant_0.*conj(repmat(t_complex(1:180*140),length(Ant_0)/(180*140),1)),180*140,[]);
 %ch_reshaped=reshape(Ant_0,180*140,[]);
+
 clear('Ant_0');
+
+a=reshape(ch_reshaped,180,140,[]); % Returns  N_subcarrier X N_symbol X N_frame 3-D vector
+figure; plot(angle(squeeze(a(10,10,:)))); % Plot symbol 10, subcarrier 10 across frames
