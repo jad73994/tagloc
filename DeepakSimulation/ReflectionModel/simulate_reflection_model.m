@@ -9,13 +9,9 @@ clear
 % For paths, red path is a non-blocked path and black path is a blocked
 % path
 %% Define the space
-walls = get_rectangle([0,0],20,15);  % Walls are defined just for plotting. They are non-reflecting, non-blocking
-                % Also, the coordinates for bounded objects always have to
-                % be defined in a clockwise or counter-clockwise order (not
-                % in a random order).
-                
+walls = get_rectangle([0,0],20,15);  % Walls are defined just for plotting. They are non-reflecting, non-blocking                              
 obstacles{1} = get_rectangle([7,5],2,2); %Obstacles are bounded and opaque to wireless signals
-obstacles{2} = get_rectangle([16,5],2,3); 
+obstacles{2} = get_rectangle([16,5],2,3); %get rectangle([x,y],w,h) returns a rectangle at x,y with width w and height h
 reflectors{1} = [20,2;20,13]; % Reflectors are linear for ease 
 model.walls = walls;
 model.reflectors =  reflectors;
